@@ -1,4 +1,4 @@
-# Nombre y apellido
+## Nombre y apellido
 
-Nombre = Geronimo
-Apellido = Ortiz
+- Nombre = Geronimo
+- Apellido = Ortiz
