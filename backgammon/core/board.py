@@ -1,33 +1,30 @@
 class Board:
-    """Representación simple del tablero de Backgammon.
-
-    Internamente se representa como una lista de 24 puntos (índices 0..23).
-    Cada punto es una lista de fichas, donde cada ficha es el identificador del jugador
-    (por ejemplo: 'jugador1' o 'jugador2'). Además existen dos zonas especiales:
-    - bar: fichas capturadas que deben volver a entrar.
-    - final (borne-off): fichas que ya han salido del tablero.
-
-    Esta implementación ofrece métodos mínimos necesarios para tests y lógica de juego:
-    - setup(): coloca las fichas en la posición inicial estándar de Backgammon
-
-    Nota: Esta clase es una implementación inicial enfocada a claridad y testeo; reglas
-    completas (entrada desde bar, bearing off con condiciones, golpes múltiples, etc.)
-    se pueden agregar posteriormente.
     """
+    Representación simple del tablero de Backgammon.
 
+    El tablero se modela como una lista de 24 puntos (índices 0 a 23), donde cada punto es una lista de fichas.
+    Cada ficha se representa por el identificador del jugador (por ejemplo: 'jugador1' o 'jugador2').
+    Además, existen dos zonas especiales:
+    - __bar__: fichas capturadas que deben volver a entrar al tablero.
+    - __final__ (borne-off): fichas que ya han salido del tablero.
+
+    Esta clase proporciona los métodos mínimos para inicializar el tablero y gestionar el estado básico
+    necesario para la lógica y los tests del juego.
+    """
     def __init__(self):
         self.__points__ = [[] for _ in range(24)]
         self.__bar__ = {"jugador1": [], "jugador2": []}
         self.__final__ = {"jugador1": [], "jugador2": []}
 
     def setup(self):
-        """Coloca las fichas en la disposición inicial estándar.
+        """
+        Coloca las fichas en la disposición inicial estándar de Backgammon.
 
-        Usamos la convención:
-        - 'jugador1' empieza en el punto 0 con 2 fichas, etc. (convención de índice)
-        La colocación estándar de Backgammon (índices 0..23) suele ser:
-        jugador1: 2 en 0, 5 en 11, 3 en 16, 5 en 18  (o una rotación equivalente)
-        jugador2: posiciones simétricas en el otro lado.
+        Limpia el tablero y posiciona las fichas de ambos jugadores según la convención:
+        - 'jugador1': 2 fichas en el punto 0, 5 en el 11, 3 en el 16 y 5 en el 18.
+        - 'jugador2': posiciones simétricas (2 en el 23, 5 en el 12, 3 en el 7 y 5 en el 5).
+
+        Esta disposición corresponde a la posición inicial clásica del juego.
         """
         # Limpiar
         self.__points__ = [[] for _ in range(24)]

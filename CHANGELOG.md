@@ -10,6 +10,7 @@ y este proyecto sigue [Semantic Versioning](https://semver.org/lang/es/).
 ### Added
 
 - Agregamos método setup a la clase Board para inicializar el tablero con la disposición estándar de Backgammon.
+- Implementamos el inicio del CLI
 
 ## [0.1.0] 4-09-2025
 
