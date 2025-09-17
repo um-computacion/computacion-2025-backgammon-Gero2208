@@ -1,2 +1,21 @@
 class Player:
-    pass
+    """
+    Representa a un jugador de Backgammon.
+
+    Atributos:
+        __nombre__ (str): Nombre del jugador.
+        __color__ (str): Color asignado al jugador ('blanco' o 'negro').
+        __direccion__ (int): Dirección de movimiento en el tablero (+1 o -1).
+    """
+    def __init__(self, color: str, nombre: str, direccion: int):
+        """
+        Inicializa un jugador con su color, nombre y dirección.
+
+        Args:
+            color (str): Color del jugador ('blanco' o 'negro').
+            nombre (str): Nombre del jugador.
+            direccion (int): Dirección de movimiento (+1 o -1).
+        """
+        self.__nombre__ = str(nombre)
+        self.__color__ = str(color)
+        self.__direccion__ = direccion
