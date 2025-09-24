@@ -5,14 +5,18 @@ Todas las modificaciones notables de este proyecto serán documentadas en este a
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/),
 y este proyecto sigue [Semantic Versioning](https://semver.org/lang/es/).
 
-## [0.4.0] 17-09-2025
+## [0.3.0] 24-09-2025
+
+- Implementación del método mostrar_tablero_cli en la clase Board para representar el tablero de Backgammon en la consola con triángulos y detalles de fichas.
+
+## [0.2.2] 17-09-2025
 
 ### Added
 
 - Implementación de atributos básicos de la clase Player.
 - Implementación del método asignar_color_opuesto a la clase Player.
 
-## [0.3.0] 16-09-2025
+## [0.2.1] 16-09-2025
 
 ### Added
 
