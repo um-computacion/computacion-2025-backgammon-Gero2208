@@ -17,7 +17,7 @@ def main():
 
     print("Tablero:")
     board = Board()
-    board.setup()
+    board.mostrar_tablero_cli()
 
 
 if __name__ == '__main__':
