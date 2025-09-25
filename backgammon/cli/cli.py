@@ -5,18 +5,22 @@ def main():
     print("Iniciando Backgammon")
 
     nombre1 = input("Nombre del Jugador 1: ")
-    color = input("Color del Jugador 1 (Blanco/Negro): ").lower()
-    while color not in ("blanco", "negro"):
+    color1 = input("Color del Jugador 1 (Blanco/Negro): ").lower()
+    while color1 not in ("blanco", "negro"):
         print("Color inválido. Debe ser 'Blanco' o 'Negro'")
-        color = input("Color del Jugador 1 (Blanco/Negro): ").lower()
+        color1 = input("Color del Jugador 1 (Blanco/Negro): ").lower()
     nombre2 = input("Nombre del Jugador 2: ")
+    color2 = ""
+    if color1 == "negro":
+        color2 = "blanco"
+    else:
+        color2 = "negro"
 
-    p1 = Player(color, nombre1, +1)
-    p2 = Player("", nombre2, -1)
-    p2.asignar_color_opuesto(color)
+    p1 = Player(color1, nombre1, +1)
+    p2 = Player(color2, nombre2, -1)
 
     print("Tablero:")
-    board = Board()
+    board = Board(color1, color2)
     board.mostrar_tablero_cli()
 
 

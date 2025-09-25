@@ -16,33 +16,28 @@ class Board:
         self.__bar__ = {"jugador1": [], "jugador2": []}
         self.__final__ = {"jugador1": [], "jugador2": []}
 
-    def setup(self):
+    def setup(self, color1, color2):
         """
         Coloca las fichas en la disposición inicial estándar de Backgammon.
 
-        Limpia el tablero y posiciona las fichas de ambos jugadores según la convención:
-        - 'jugador1': 2 fichas en el punto 0, 5 en el 11, 3 en el 16 y 5 en el 18.
-        - 'jugador2': posiciones simétricas (2 en el 23, 5 en el 12, 3 en el 7 y 5 en el 5).
-
-        Esta disposición corresponde a la posición inicial clásica del juego.
+        color1: color del primer jugador ('blanco' o 'negro')
+        color2: color del segundo jugador ('blanco' o 'negro')
         """
-        # Limpiar
         self.__points__ = [[] for _ in range(24)]
-        self.__bar__ = {"jugador1": [], "jugador2": []}
-        self.__final__ = {"jugador1": [], "jugador2": []}
+        self.__bar__ = {color1: [], color2: []}
+        self.__final__ = {color1: [], color2: []}
 
-        # Disposición (convención elegida):
-        # jugador1
-        self.__points__[0] = ["jugador1"] * 2
-        self.__points__[11] = ["jugador1"] * 5
-        self.__points__[16] = ["jugador1"] * 3
-        self.__points__[18] = ["jugador1"] * 5
+        # color1
+        self.__points__[0] = [color1] * 2
+        self.__points__[11] = [color1] * 5
+        self.__points__[16] = [color1] * 3
+        self.__points__[18] = [color1] * 5
 
-        # jugador2 - posiciones simétricas (24 - idx)
-        self.__points__[23] = ["jugador2"] * 2
-        self.__points__[12] = ["jugador2"] * 5
-        self.__points__[7] = ["jugador2"] * 3
-        self.__points__[5] = ["jugador2"] * 5
+        # color2 - posiciones simétricas
+        self.__points__[23] = [color2] * 2
+        self.__points__[12] = [color2] * 5
+        self.__points__[7] = [color2] * 3
+        self.__points__[5] = [color2] * 5
 
     def mostrar_tablero_cli(self):
         """
