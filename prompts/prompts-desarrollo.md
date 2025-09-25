@@ -225,3 +225,208 @@ Ahora el tablero se ve con triángulos, haciendo más visual la experiencia en e
         off_blanco = len(self.__final__.get("blanco", []))
         off_negro = len(self.__final__.get("negro", []))
         print(f"Barra: Blanco={bar_blanco}  Negro={bar_negro}   |   Final: Blanco={off_blanco}  Negro={off_negro}")
+
+## Prompt
+
+### Puedes hacer que en el tablero las fichas aparezcan en columna encima del triangulo en vez de horizontalmente? Ademas, respeta espacios para que se vea correctamente horizontal toda la estructura y las fichas
+
+## Response
+
+    def mostrar_tablero_cli(self):
+        """
+        Muestra el tablero de Backgammon en la consola de forma gráfica,
+        con las fichas apiladas en columna sobre cada triángulo.
+        """
+        simbolos = {"blanco": "⚪", "negro": "⚫"}
+
+        # Prepara las columnas de fichas para la fila superior (12 a 23)
+        columnas_sup = []
+        for i in range(12, 24):
+            punto = self.__points__[i]
+            color = punto[0] if punto else None
+            ficha = simbolos.get(color, " ") if color else " "
+            cantidad = len(punto)
+            if cantidad == 0:
+                columnas_sup.append(["  "] * 5)
+            elif cantidad <= 5:
+                col = [f" {ficha}" for _ in range(cantidad)]
+                col += ["  "] * (5 - cantidad)
+                columnas_sup.append(col)
+            else:
+                col = [f" {ficha}" for _ in range(4)] + [f"x{cantidad}"]
+                columnas_sup.append(col)
+
+        # Prepara las columnas de fichas para la fila inferior (11 a 0)
+        columnas_inf = []
+        for i in range(11, -1, -1):
+            punto = self.__points__[i]
+            color = punto[0] if punto else None
+            ficha = simbolos.get(color, " ") if color else " "
+            cantidad = len(punto)
+            if cantidad == 0:
+                columnas_inf.append(["  "] * 5)
+            elif cantidad <= 5:
+                col = [f" {ficha}" for _ in range(cantidad)]
+                col += ["  "] * (5 - cantidad)
+                columnas_inf.append(col)
+            else:
+                col = [f" {ficha}" for _ in range(4)] + [f"x{cantidad}"]
+                columnas_inf.append(col)
+
+        print("  +---------------------+---------------------+")
+        # Imprime las filas de fichas (de arriba hacia abajo)
+        for fila in range(4, -1, -1):
+            linea = "  |"
+            for idx, col in enumerate(columnas_sup):
+                linea += col[fila]
+                if idx == 5 or idx == 11:
+                    linea += "   |"
+            print(linea)
+        # Imprime los triángulos superiores
+        linea = "  |"
+        for idx in range(12, 24):
+            linea += " ▲"
+            if idx == 17:
+                linea += "   |"
+        print(linea + "   |")
+        print("  +---------------------+---------------------+")
+
+        # Imprime los triángulos inferiores
+        linea = "  |"
+        for idx in range(11, -1, -1):
+            linea += " ▼"
+            if idx == 6:
+                linea += "   |"
+        print(linea + "   |")
+        # Imprime las filas de fichas (de abajo hacia arriba)
+        for fila in range(5):
+            linea = "  |"
+            for idx, col in enumerate(columnas_inf):
+                linea += col[fila]
+                if idx == 5 or idx == 11:
+                    linea += "   |"
+            print(linea)
+        print("  +---------------------+---------------------+")
+
+        bar_blanco = len(self.__bar__.get("blanco", []))
+        bar_negro = len(self.__bar__.get("negro", []))
+        off_blanco = len(self.__final__.get("blanco", []))
+        off_negro = len(self.__final__.get("negro", []))
+        print(f"Barra: Blanco={bar_blanco}  Negro={bar_negro}   |   Final: Blanco={off_blanco}  Negro={off_negro}")
+
+## Prompt
+
+### Tengo este método para mostrar el tablero del juego Backgammon en el CLI, el problema es que el tablero y las fichas no estan alineadas y quedan totalmente movidas, necesito que lo rehagas para que se vea correctamente alineado.
+
+## Response
+
+def mostrar_tablero_cli(self, alto_col=5, ancho_col=3, simbolos=None):
+    """
+    Muestra el tablero de Backgammon en la consola de forma alineada.
+    - alto_col: alto visible de cada columna de fichas (5 por defecto).
+    - ancho_col: ancho fijo de cada celda/columna (3 por defecto).
+    - simbolos: dict opcional {"blanco": "○", "negro": "●"}.
+      Si tu terminal no respeta el ancho, usa {"blanco": "O", "negro": "X"}.
+    """
+    # --- Config ---
+    if simbolos is None:
+        simbolos = {"blanco": "○", "negro": "●"}  # Usa ASCII si tu terminal no los muestra bien.
+    VACIO = " "
+
+    def celda(txt):
+        return f"{txt:^{ancho_col}}"
+
+    def columna_para_pila(pila, orientacion="top"):
+        """
+        Devuelve una lista de largo alto_col, con las fichas 'pegadas'
+        hacia 'top' (para fila superior) o 'bottom' (para fila inferior).
+        Si hay más de alto_col fichas, se muestran (alto_col-1) y un '×N'.
+        """
+        if not pila:
+            return [celda(VACIO)] * alto_col
+
+        color = pila[0]
+        ficha = simbolos.get(color, VACIO)
+        n = len(pila)
+
+        if n <= alto_col:
+            fichas = [celda(ficha)] * n
+            vacios = [celda(VACIO)] * (alto_col - n)
+            if orientacion == "top":
+                # Pegadas arriba
+                return fichas + vacios
+            else:
+                # Pegadas abajo
+                return vacios + fichas
+        else:
+            # (alto_col-1) fichas + contador
+            visibles = alto_col - 1
+            contador = celda(f"×{n}")
+            fichas = [celda(ficha)] * visibles
+            if orientacion == "top":
+                return fichas + [contador]
+            else:
+                return [contador] + fichas
+
+    # --- Construcción de columnas visibles ---
+    # Top visual: índices internos 12..23 (que el usuario ve como 13..24 izquierda->derecha)
+    columnas_sup = [columna_para_pila(self.__points__[i], "top") for i in range(12, 24)]
+    # Bottom visual: índices internos 11..0 (que el usuario ve como 12..1 izquierda->derecha)
+    columnas_inf = [columna_para_pila(self.__points__[i], "bottom") for i in range(11, -1, -1)]
+
+    # --- Helpers de impresión ---
+    def separador():
+        # Dos cuadrantes de 6 columnas cada uno
+        return "  +" + "-" * (ancho_col * 6) + "+" + "-" * (ancho_col * 6) + "+"
+
+    def linea_con_divisiones(celdas):
+        # Inserta una barra vertical entre las columnas 6 y 7 (bar central)
+        partes = ["  |"]
+        for idx, c in enumerate(celdas, 1):
+            partes.append(c)
+            if idx == 6:
+                partes.append("|")
+        partes.append("|")
+        return "".join(partes)
+
+    # --- Encabezados (números de puntos) ---
+    cab_sup = []
+    for p in range(13, 25):  # 13..24
+        cab_sup.append(celda(str(p if p >= 10 else f" {p}")))
+    cab_inf = []
+    for p in range(12, 0, -1):  # 12..1
+        cab_inf.append(celda(str(p if p >= 10 else f" {p}")))
+
+    # --- Impresión ---
+    print()
+    print("   " + "".join(cab_sup[:6]) + " " + "".join(cab_sup[6:]))
+    print(separador())
+
+    # Fila superior: se imprime de arriba (índice alto) hacia abajo (índice 0)
+    for fila in range(alto_col - 1, -1, -1):
+        fila_sup = [col[fila] for col in columnas_sup]
+        print(linea_con_divisiones(fila_sup))
+
+    # Triángulos superiores
+    triangles_up = [celda("▲")] * 12
+    print(linea_con_divisiones(triangles_up))
+    print(separador())
+
+    # Triángulos inferiores
+    triangles_down = [celda("▼")] * 12
+    print(linea_con_divisiones(triangles_down))
+
+    # Fila inferior: se imprime de abajo (índice 0) hacia arriba (índice alto)
+    for fila in range(0, alto_col):
+        fila_inf = [col[fila] for col in columnas_inf]
+        print(linea_con_divisiones(fila_inf))
+
+    print(separador())
+    print("   " + "".join(cab_inf[:6]) + " " + "".join(cab_inf[6:]))
+
+    # --- Barra y fuera ---
+    bar_blanco = len(self.__bar__.get("blanco", []))
+    bar_negro = len(self.__bar__.get("negro", []))
+    off_blanco = len(self.__final__.get("blanco", []))
+    off_negro = len(self.__final__.get("negro", []))
+    print(f"\nBarra: Blanco={bar_blanco}  Negro={bar_negro}   |   Final: Blanco={off_blanco}  Negro={off_negro}")

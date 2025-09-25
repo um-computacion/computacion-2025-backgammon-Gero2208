@@ -20,7 +20,8 @@ def main():
     p2 = Player(color2, nombre2, -1)
 
     print("Tablero:")
-    board = Board(color1, color2)
+    board = Board()
+    board.setup(color1, color2)
     board.mostrar_tablero_cli()
 
 
