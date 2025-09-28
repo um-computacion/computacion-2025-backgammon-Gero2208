@@ -1,11 +1,5 @@
-## Prompt
-
-### Haz tests de mis actuales métodos de la clase Dice
-
-## Response
-
 import unittest
-from dice import Dice
+from backgammon.core.dice import Dice
 
 class TestDice(unittest.TestCase):
 
@@ -29,5 +23,5 @@ class TestDice(unittest.TestCase):
         dado.__valor__ = [2, 6]
         self.assertFalse(dado.dobles())
 
-    if __name__ == "__main__":
-        unittest.main()
+if __name__ == "__main__":
+    unittest.main()
