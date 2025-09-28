@@ -5,6 +5,12 @@ Todas las modificaciones notables de este proyecto serán documentadas en este a
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/),
 y este proyecto sigue [Semantic Versioning](https://semver.org/lang/es/).
 
+## [0.3.1] 28-09-2025
+
+- Mejora gráfica del tablero para el CLI
+- Implementación de atributos para la clase Dice
+- Implementación del método roll para la clase Dice
+
 ## [0.3.0] 24-09-2025
 
 - Implementación del método mostrar_tablero_cli en la clase Board para representar el tablero de Backgammon en la consola con triángulos y detalles de fichas.

@@ -135,7 +135,7 @@ class Board:
         print(linea_con_divisiones(triangles_down))
 
         # Fila inferior: se imprime de abajo (índice 0) hacia arriba (índice alto)
-        for fila in range(0, alto_col):
+        for fila in range(alto_col - 1, -1, -1):
             fila_inf = [col[fila] for col in columnas_inf]
             print(linea_con_divisiones(fila_inf))
 
