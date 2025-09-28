@@ -10,6 +10,8 @@ y este proyecto sigue [Semantic Versioning](https://semver.org/lang/es/).
 - Mejora gráfica del tablero para el CLI
 - Implementación de atributos para la clase Dice
 - Implementación del método roll para la clase Dice
+- Implementación del método dobles para la clase Dice
+- Tests para la clase Dice
 
 ## [0.3.0] 24-09-2025
 
