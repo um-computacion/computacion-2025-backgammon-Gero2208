@@ -19,3 +19,9 @@ class Player:
         self.__nombre__ = str(nombre)
         self.__color__ = str(color)
         self.__direccion__ = direccion
+
+    def nombre(self):
+        return self.__nombre__
+    
+    def color(self):
+        return self.__color__

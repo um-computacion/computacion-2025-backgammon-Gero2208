@@ -1,5 +1,6 @@
 from ..core.player import Player
 from ..core.board import Board
+from ..core.game import Game
 
 def main():
     print("Iniciando Backgammon")
@@ -19,10 +20,15 @@ def main():
     p1 = Player(color1, nombre1, +1)
     p2 = Player(color2, nombre2, -1)
 
-    print("Tablero:")
     board = Board()
     board.setup(color1, color2)
+
+    game = Game(p1, p2)
+
+    print("Tablero:")
     board.mostrar_tablero_cli()
+
+    print(f"Turno de: {game.jugador_actual().nombre()} ({game.jugador_actual().color()})")
 
 
 if __name__ == '__main__':

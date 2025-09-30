@@ -5,6 +5,13 @@ Todas las modificaciones notables de este proyecto serán documentadas en este a
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/),
 y este proyecto sigue [Semantic Versioning](https://semver.org/lang/es/).
 
+## [0.3.2] 30-09-2025
+
+- Implementación de atributos para la clase Game
+- Implementación del método jugador_actual para la clase Game
+- Implementación del método cambiar_turno para la clase Game
+- Implementación de dos métodos en Player para obtener nombre y color
+
 ## [0.3.1] 28-09-2025
 
 - Mejora gráfica del tablero para el CLI
