@@ -1,6 +1,7 @@
 from ..core.player import Player
 from ..core.board import Board
 from ..core.game import Game
+from ..core.dice import Dice
 
 def main():
     print("Iniciando Backgammon")
@@ -29,6 +30,17 @@ def main():
     board.mostrar_tablero_cli()
 
     print(f"Turno de: {game.jugador_actual().nombre()} ({game.jugador_actual().color()})")
+
+    dado = Dice()
+    resultado = dado.roll()
+    print(f"Dados: {resultado}")
+    if dado.dobles():
+        print("Dobles")
+    else:
+        print("No son dobles")
+
+
+
 
 
 if __name__ == '__main__':
