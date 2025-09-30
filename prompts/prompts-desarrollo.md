@@ -430,3 +430,20 @@ def mostrar_tablero_cli(self, alto_col=5, ancho_col=3, simbolos=None):
     off_blanco = len(self.__final__.get("blanco", []))
     off_negro = len(self.__final__.get("negro", []))
     print(f"\nBarra: Blanco={bar_blanco}  Negro={bar_negro}   |   Final: Blanco={off_blanco}  Negro={off_negro}")
+
+## Prompt
+
+### Hace falta implementar que cuando sean dos valores iguales se dupliquen y tengas 4 valores en el dado, debo implementar este método en la clase Dice
+
+## Response
+
+    def movimientos(self):
+        """
+        Devuelve la lista de movimientos disponibles según la tirada actual.
+        Si es doble, devuelve cuatro veces ese valor.
+        Si no, devuelve los dos valores.
+        """
+        if self.dobles():
+            return [self.__valor__[0]] * 4
+        else:
+            return self.__valor__[:]

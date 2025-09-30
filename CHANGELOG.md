@@ -11,6 +11,7 @@ y este proyecto sigue [Semantic Versioning](https://semver.org/lang/es/).
 - Implementación del método jugador_actual para la clase Game
 - Implementación del método cambiar_turno para la clase Game
 - Implementación de dos métodos en Player para obtener nombre y color
+- Implementación de Dice en CLI para realizar tiradas y duplicar tiradas del mismo valor
 
 ## [0.3.1] 28-09-2025
 
