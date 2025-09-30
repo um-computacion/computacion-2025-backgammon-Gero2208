@@ -35,12 +35,8 @@ def main():
     resultado = dado.roll()
     print(f"Dados: {resultado}")
     if dado.dobles():
-        print("Dobles")
-    else:
-        print("No son dobles")
-
-
-
+        print("Dobles!")
+        print(f"Dados: {dado.duplicar()}")
 
 
 if __name__ == '__main__':

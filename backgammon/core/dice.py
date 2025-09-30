@@ -33,3 +33,9 @@ class Dice:
             bool: True si los dos valores son iguales, False en caso contrario.
         """
         return self.__valor__[0] == self.__valor__[1]
+    
+    def duplicar(self):
+        if self.dobles():
+            return [self.__valor__[0]] * 4 
+        else:
+            return self.__valor__
