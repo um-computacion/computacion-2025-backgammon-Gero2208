@@ -5,6 +5,14 @@ Todas las modificaciones notables de este proyecto serán documentadas en este a
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/),
 y este proyecto sigue [Semantic Versioning](https://semver.org/lang/es/).
 
+## [0.4.0] 07-10-2025
+
+- Implementación de la clase Checkers
+- Implementación del método es_movimiento_valido para la clase Checkers
+- Implementación del método mover para la clase Checkers
+- Implementación del método destinos_posibles para la clase Checkers
+- Implementación de movimientos para el CLI
+
 ## [0.3.2] 30-09-2025
 
 - Implementación de atributos para la clase Game
