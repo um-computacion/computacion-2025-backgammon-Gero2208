@@ -447,3 +447,120 @@ def mostrar_tablero_cli(self, alto_col=5, ancho_col=3, simbolos=None):
             return [self.__valor__[0]] * 4
         else:
             return self.__valor__[:]
+
+## Prompt
+
+### Debo hacer los movimientos para cada jugador, en que clase deberia hacerlo? Debo hacer que en el cli muestre los movimientos posibles, ej, puedes mover a la casilla 13, 16, y asi. Ademas debo implementar el sistema de movimientos con excepciones para los errores
+
+## Response
+
+¡Muy buenas preguntas!
+
+1. ¿En qué clase implementar los movimientos?
+La lógica de los movimientos (validar, calcular posibles movimientos, mover fichas) debe estar principalmente en la clase Board.
+
+El tablero sabe dónde están las fichas y puede validar si un movimiento es legal.
+Puedes tener métodos como:
+mover_ficha(origen, destino, color)
+movimientos_posibles(posicion, dados, color)
+es_movimiento_valido(origen, destino, color)
+La clase Game puede coordinar el flujo (turnos, dados, ganador), pero la lógica de mover fichas y validar va en Board.
+
+2. ¿Cómo mostrar los movimientos posibles en el CLI?
+En el CLI, llama a un método de Board que te devuelva una lista de movimientos posibles para el jugador actual y los dados lanzados.
+Ejemplo:
+3. ¿Cómo implementar el sistema de movimientos con excepciones?
+En Board, cuando intentes mover una ficha, si el movimiento es inválido, lanza una excepción personalizada (por ejemplo, MovimientoInvalido(Exception)).
+En el CLI, usa un bloque try/except para capturar el error y mostrar un mensaje amigable al usuario.
+Ejemplo:
+
+Resumen de responsabilidades
+Board: Lógica de movimientos, validaciones, estado del tablero.
+Game: Turnos, flujo general, interacción entre jugadores, tablero y dados.
+CLI: Interfaz con el usuario, muestra los movimientos posibles y gestiona la entrada/salida.
+¿Quieres que te ayude a definir la estructura de los métodos en Board o a crear la excepción personalizada?
+
+## Prompt
+
+### Ayudame a comenzar con los metodos para mi clase checkers para poder realizar movimientos en el tablero, ademas hay que utilizar try para los errores
+
+## Response
+
+class MovimientoInvalido(Exception):
+    """Excepción para movimientos inválidos en Backgammon."""
+    pass
+
+class Checkers:
+    @staticmethod
+    def es_movimiento_valido(board, jugador, origen, destino, dado):
+        """
+        Verifica si un movimiento es válido según las reglas básicas.
+        Lanza MovimientoInvalido si no lo es.
+        """
+        color = jugador.color()
+        puntos = board._Board__points__
+        # Ejemplo de validación básica:
+        if origen < 0 or origen > 23 or destino < 0 or destino > 23:
+            raise MovimientoInvalido("Origen o destino fuera del tablero.")
+        if not puntos[origen] or puntos[origen][0] != color:
+            raise MovimientoInvalido("No hay ficha propia en el origen.")
+        if abs(destino - origen) != dado * jugador._Player__direccion__:
+            raise MovimientoInvalido("El destino no corresponde al dado y dirección.")
+        # Puedes agregar más validaciones aquí (ocupación, capturas, etc.)
+
+    @staticmethod
+    def mover(board, jugador, origen, destino, dado):
+        """
+        Intenta mover una ficha. Lanza MovimientoInvalido si no es posible.
+        """
+        Checkers.es_movimiento_valido(board, jugador, origen, destino, dado)
+        color = jugador.color()
+        puntos = board._Board__points__
+        # Realiza el movimiento
+        puntos[origen].pop()
+        puntos[destino].append(color)
+        # Aquí puedes agregar lógica para capturas, barra, borne-off, etc.
+    
+## Prompt
+
+### Como hago para que muestre los posibles movimientos a hacer desde la casilla que selecciones al principio para mover
+
+## Response
+
+    @staticmethod
+    def destinos_posibles(board, jugador, origen, dados):
+        color = jugador.color() if callable(jugador.color) else jugador.color
+        direccion = jugador.direccion() if callable(jugador.direccion) else jugador.direccion
+        puntos = board.__points__
+        destinos = []
+        for dado in dados:
+            destino = origen + direccion * dado
+            if 0 <= destino <= 23:
+                try:
+                    Checkers.es_movimiento_valido(board, jugador, origen, destino, dado)
+                    destinos.append(destino)
+                except MovimientoInvalido:
+                    continue
+        return destinos
+
+## Prompt
+
+### No funciona lo de si hay movimientos disponibles ya que elegi una casilla en la cual si podia mover y me decia que no hay movimientos disponibles
+
+## Response
+
+Cambia la validación por:
+
+    if destino != origen + direccion * dado:
+        raise MovimientoInvalido("El destino no corresponde al dado y dirección.")
+
+## Prompt
+
+### No funciona, pero me di cuenta que en el tablero se ven invertidos los colores y eso es lo que esta causando el problema, como puedo arreglar eso?
+
+## Response
+
+Asegúrate de que los símbolos usados en mostrar_tablero_cli correspondan a los colores lógicos:
+
+"blanco": "○"
+"negro": "●"
