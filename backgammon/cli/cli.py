@@ -2,6 +2,7 @@ from ..core.player import Player
 from ..core.board import Board
 from ..core.game import Game
 from ..core.dice import Dice
+from ..core.checkers import Checkers, MovimientoInvalido
 
 def main():
     print("Iniciando Backgammon")
@@ -38,6 +39,23 @@ def main():
         print("Dobles!")
         print(f"Dados: {dado.duplicar()}")
 
+    try:
+        origen = int(input("Desde qué punto quieres mover? ")) - 1
+        dados_disponibles = dado.duplicar()
+        posibles_destinos = Checkers.destinos_posibles(board, game.jugador_actual(), origen, dados_disponibles)
+        if posibles_destinos:
+            # Suma 1 para mostrar al usuario los puntos como 1-24
+            print(f"Puedes mover desde {origen+1} a las casillas: {[d+1 for d in posibles_destinos]}")
+        else:
+            print(f"No hay movimientos posibles desde la casilla {origen+1} con los dados actuales.")
+            return
+
+        destino = int(input("A qué punto quieres mover? ")) - 1
+        dado_usado = int(input("¿Con qué dado? "))  # O selecciona de los disponibles
+        Checkers.mover(board, game.jugador_actual(), origen, destino, dado_usado)
+        board.mostrar_tablero_cli()
+    except MovimientoInvalido as e:
+        print(f"Error: {e}")
 
 if __name__ == '__main__':
     main()
