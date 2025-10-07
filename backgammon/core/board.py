@@ -13,8 +13,8 @@ class Board:
     """
     def __init__(self):
         self.__points__ = [[] for _ in range(24)]
-        self.__bar__ = {"jugador1": [], "jugador2": []}
-        self.__final__ = {"jugador1": [], "jugador2": []}
+        self.__bar__ = {"blanco": [], "negro": []}
+        self.__final__ = {"blanco": [], "negro": []}
 
     def setup(self, color1, color2):
         """
@@ -48,7 +48,7 @@ class Board:
         """
         # --- Config ---
         if simbolos is None:
-            simbolos = {"blanco": "○", "negro": "●"}
+            simbolos = {"blanco": "●", "negro": "○"}
         VACIO = " "
 
         def celda(txt):

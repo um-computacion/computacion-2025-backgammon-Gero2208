@@ -25,3 +25,6 @@ class Player:
     
     def color(self):
         return self.__color__
+    
+    def direccion(self):
+        return self.__direccion__
