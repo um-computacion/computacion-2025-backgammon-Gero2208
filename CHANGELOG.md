@@ -5,6 +5,14 @@ Todas las modificaciones notables de este proyecto serán documentadas en este a
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/),
 y este proyecto sigue [Semantic Versioning](https://semver.org/lang/es/).
 
+## [0.4.1] 20-10-2025
+
+- Implementación de lógica para el sistema de movimientos
+- Implementación del método dado_para_movimiento para la clase Checkers
+- Implementación del método mover_y_consumir para la clase Checkers
+- Implementación del método hay_movimientos_posibles para la clase Checkers
+- Correción de bugs y avance en CLI para gestión de turnos con movimientos
+
 ## [0.4.0] 07-10-2025
 
 - Implementación de la clase Checkers

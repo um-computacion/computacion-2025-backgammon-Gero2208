@@ -27,35 +27,52 @@ def main():
 
     game = Game(p1, p2)
 
-    print("Tablero:")
-    board.mostrar_tablero_cli()
-
-    print(f"Turno de: {game.jugador_actual().nombre()} ({game.jugador_actual().color()})")
-
     dado = Dice()
-    resultado = dado.roll()
-    print(f"Dados: {resultado}")
-    if dado.dobles():
-        print("Dobles!")
-        print(f"Dados: {dado.duplicar()}")
-
-    try:
-        origen = int(input("Desde qué punto quieres mover? ")) - 1
+    
+    while True:
+        print(f"Turno de: {game.jugador_actual().nombre()} ({game.jugador_actual().color()})")
+        resultado = dado.roll()
         dados_disponibles = dado.duplicar()
-        posibles_destinos = Checkers.destinos_posibles(board, game.jugador_actual(), origen, dados_disponibles)
-        if posibles_destinos:
-            # Suma 1 para mostrar al usuario los puntos como 1-24
-            print(f"Puedes mover desde {origen+1} a las casillas: {[d+1 for d in posibles_destinos]}")
-        else:
-            print(f"No hay movimientos posibles desde la casilla {origen+1} con los dados actuales.")
-            return
+        movimientos_restantes = dados_disponibles.copy()
 
-        destino = int(input("A qué punto quieres mover? ")) - 1
-        dado_usado = int(input("¿Con qué dado? "))  # O selecciona de los disponibles
-        Checkers.mover(board, game.jugador_actual(), origen, destino, dado_usado)
         board.mostrar_tablero_cli()
-    except MovimientoInvalido as e:
-        print(f"Error: {e}")
+        print(f"Dados restantes: {movimientos_restantes}")
+
+        while movimientos_restantes:
+            try:
+                origen = int(input("Desde qué punto quieres mover? ")) - 1
+                destinos = Checkers.destinos_posibles(board, game.jugador_actual(), origen, movimientos_restantes)
+                if not destinos:
+                    print(f"No hay movimientos posibles desde la casilla {origen+1} con los dados actuales.")
+                    if not Checkers.hay_movimientos_posibles(board, game.jugador_actual(), movimientos_restantes):
+                        print("No quedan movimientos posibles con los dados restantes.")
+                        break
+                    continue
+
+                print(f"Puedes mover desde {origen+1} a las casillas: {[d+1 for d in destinos]}")
+                destino = int(input("A qué punto quieres mover? ")) - 1
+
+                movimientos_restantes = Checkers.mover_y_consumir(
+                    board, game.jugador_actual(), origen, destino, movimientos_restantes
+                )
+
+                # Mostrar tablero solo si quedan movimientos por hacer en este turno
+                if movimientos_restantes:
+                    board.mostrar_tablero_cli()
+                    print(f"Dados restantes: {movimientos_restantes}")
+
+            except MovimientoInvalido as e:
+                print(f"Error: {e}")
+            except ValueError:
+                print("Entrada inválida.")
+            except Exception as e:
+                print(f"Error inesperado: {e}")
+
+            if movimientos_restantes and not Checkers.hay_movimientos_posibles(board, game.jugador_actual(), movimientos_restantes):
+                print("No quedan movimientos posibles con los dados restantes.")
+                break
+
+        game.cambiar_turno()
 
 if __name__ == '__main__':
     main()
