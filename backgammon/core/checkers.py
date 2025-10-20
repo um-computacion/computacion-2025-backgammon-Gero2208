@@ -5,8 +5,8 @@ class MovimientoInvalido(Exception):
 class Checkers:
     @staticmethod
     def es_movimiento_valido(board, jugador, origen, destino, dado):
-        color = jugador.color() if callable(jugador.color) else jugador.color
-        direccion = jugador.direccion() if callable(jugador.direccion) else jugador.direccion
+        color = jugador.color()
+        direccion = jugador.direccion()
         puntos = board.__points__
         if origen < 0 or origen > 23 or destino < 0 or destino > 23:
             raise MovimientoInvalido("Origen o destino fuera del tablero.")
@@ -14,30 +14,24 @@ class Checkers:
             raise MovimientoInvalido("No hay ficha propia en el origen.")
         if destino != origen + direccion * dado:
             raise MovimientoInvalido("El destino no corresponde al dado y dirección.")
-    # --- Validación de ocupación en el destino ---
         if puntos[destino]:
             color_destino = puntos[destino][0]
             cantidad = len(puntos[destino])
             if color_destino != color and cantidad > 1:
                 raise MovimientoInvalido("No puedes mover a una casilla ocupada por 2 o más fichas rivales.")
-    # Si está vacía, o hay fichas propias, o solo una rival, el movimiento es válido
 
     @staticmethod
     def mover(board, jugador, origen, destino, dado):
-        """
-        Intenta mover una ficha. Lanza MovimientoInvalido si no es posible.
-        """
         Checkers.es_movimiento_valido(board, jugador, origen, destino, dado)
-        color = jugador.color() if callable(jugador.color) else jugador.color
+        color = jugador.color()
         puntos = board.__points__
         puntos[origen].pop()
         puntos[destino].append(color)
-        # Aquí puedes agregar lógica para capturas, barra, borne-off, etc.
 
     @staticmethod
     def destinos_posibles(board, jugador, origen, dados):
-        color = jugador.color() if callable(jugador.color) else jugador.color
-        direccion = jugador.direccion() if callable(jugador.direccion) else jugador.direccion
+        color = jugador.color()
+        direccion = jugador.direccion()
         puntos = board.__points__
         destinos = []
         for dado in dados:
@@ -49,3 +43,32 @@ class Checkers:
                 except MovimientoInvalido:
                     continue
         return destinos
+    
+    @staticmethod
+    def dado_para_movimiento(jugador, origen, destino, dados):
+        direccion = jugador.direccion()
+        delta = destino - origen
+        dado = delta * direccion  # +1/-1 normaliza el signo
+        if dado <= 0:
+            return None
+        return dado if dado in dados else None
+    
+    @staticmethod
+    def mover_y_consumir(board, jugador, origen, destino, dados):
+        dado_usado = Checkers.dado_para_movimiento(jugador, origen, destino, dados)
+        if dado_usado is None:
+            raise MovimientoInvalido("Movimiento incompatible con los dados disponibles.")
+        Checkers.mover(board, jugador, origen, destino, dado_usado)
+        restantes = dados.copy()
+        restantes.remove(dado_usado)  # consume una ocurrencia
+        return restantes
+
+    @staticmethod
+    def hay_movimientos_posibles(board, jugador, dados):
+        puntos = board.__points__
+        color = jugador.color()
+        for i in range(24):
+            if puntos[i] and puntos[i][0] == color:
+                if Checkers.destinos_posibles(board, jugador, i, dados):
+                    return True
+        return False

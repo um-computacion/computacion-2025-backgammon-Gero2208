@@ -556,11 +556,78 @@ Cambia la validación por:
 
 ## Prompt
 
-### No funciona, pero me di cuenta que en el tablero se ven invertidos los colores y eso es lo que esta causando el problema, como puedo arreglar eso?
+### Al ejecutar el primer turno y hacer el primer movimiento, no deja hacer el segundo movimiento con el otro dado restante y pasa al otro turno, ademas, al pasar de turno sigue siendo el mismo jugador cuando deberia pasar al otro jugador
 
 ## Response
 
-Asegúrate de que los símbolos usados en mostrar_tablero_cli correspondan a los colores lógicos:
+ 
+    while True:
+        print(f"Turno de: {game.jugador_actual().nombre()} ({game.jugador_actual().color()})")
 
-"blanco": "○"
-"negro": "●"
+        resultado = dado.roll()
+        print(f"Dados: {resultado}")
+        dados_disponibles = dado.duplicar()
+        movimientos_restantes = dados_disponibles.copy()
+
+        # Bucle para usar todos los dados del turno
+        while movimientos_restantes:
+            board.mostrar_tablero_cli()
+            print(f"Dados restantes: {movimientos_restantes}")
+            try:
+                origen = int(input("Desde qué punto quieres mover? ")) - 1
+
+                # destinos válidos para cualquiera de los dados restantes
+                destinos = Checkers.destinos_posibles(board, game.jugador_actual(), origen, movimientos_restantes)
+                if not destinos:
+                    print(f"No hay movimientos posibles desde la casilla {origen+1} con los dados actuales.")
+                    # Si no hay movimientos desde este origen, permite elegir otro origen
+                    # pero si no hay movimientos en absoluto con los dados restantes, corta el turno
+                    hay_algun_mov = False
+                    for i in range(24):
+                        if board.__points__[i] and board.__points__[i][0] == game.jugador_actual().color():
+                            if Checkers.destinos_posibles(board, game.jugador_actual(), i, movimientos_restantes):
+                                hay_algun_mov = True
+                                break
+                    if not hay_algun_mov:
+                        print("No quedan movimientos posibles con los dados restantes.")
+                        break
+                    continue
+
+                print(f"Puedes mover desde {origen+1} a las casillas: {[d+1 for d in destinos]}")
+                destino = int(input("A qué punto quieres mover? ")) - 1
+
+                # Detectar qué dado corresponde al movimiento elegido
+                dado_usado = None
+                dirj = game.jugador_actual().direccion()
+                for d in movimientos_restantes:
+                    if destino == origen + dirj * d:
+                        dado_usado = d
+                        break
+                if dado_usado is None:
+                    print("Movimiento inválido para los dados disponibles.")
+                    continue
+
+                Checkers.mover(board, game.jugador_actual(), origen, destino, dado_usado)
+                movimientos_restantes.remove(dado_usado)
+                board.mostrar_tablero_cli()
+
+            except MovimientoInvalido as e:
+                print(f"Error: {e}")
+            except ValueError:
+                print("Entrada inválida.")
+            except Exception as e:
+                print(f"Error inesperado: {e}")
+
+            # Si no quedan movimientos posibles con los dados restantes, termina el turno
+            if movimientos_restantes:
+                hay_algun_mov = False
+                for i in range(24):
+                    if board.__points__[i] and board.__points__[i][0] == game.jugador_actual().color():
+                        if Checkers.destinos_posibles(board, game.jugador_actual(), i, movimientos_restantes):
+                            hay_algun_mov = True
+                            break
+                if not hay_algun_mov:
+                    print("No quedan movimientos posibles con los dados restantes.")
+                    break
+
+        game.cambiar_turno()
