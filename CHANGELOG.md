@@ -5,19 +5,31 @@ Todas las modificaciones notables de este proyecto serán documentadas en este a
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/),
 y este proyecto sigue [Semantic Versioning](https://semver.org/lang/es/).
 
-## [0.4.2] 20-10-2025
+## [0.4.2] 21-10-2025
 
-- Implementación de método para la clase Game para elegir quien inicia la partida
+### Added
+
+- Implementación lógica para el sistema de comer fichas, ingreso y reingreso desde la barra
+- Implementación del método destino_entrada_por_dado para la clase Checkers
+- Implementación del método puede_reingresar para la clase Checkers
+- Implementación del método reingresar_desde_bar para la clase Checkers
+- Cambios en CLI para implementar todos estos métodos
+- Se corrigio un bug en el cual al tener dados dobles se multiplicaban el destino posible una vez seleccionada una casilla
 
 ## [0.4.1] 20-10-2025
+
+### Added
 
 - Implementación de lógica para el sistema de movimientos
 - Implementación del método dado_para_movimiento para la clase Checkers
 - Implementación del método mover_y_consumir para la clase Checkers
 - Implementación del método hay_movimientos_posibles para la clase Checkers
 - Correción de bugs y avance en CLI para gestión de turnos con movimientos
+- Implementación de método para la clase Game para elegir quien inicia la partida
 
 ## [0.4.0] 07-10-2025
+
+### Added
 
 - Implementación de la clase Checkers
 - Implementación del método es_movimiento_valido para la clase Checkers
@@ -27,6 +39,8 @@ y este proyecto sigue [Semantic Versioning](https://semver.org/lang/es/).
 
 ## [0.3.2] 30-09-2025
 
+### Added
+
 - Implementación de atributos para la clase Game
 - Implementación del método jugador_actual para la clase Game
 - Implementación del método cambiar_turno para la clase Game
@@ -35,6 +49,8 @@ y este proyecto sigue [Semantic Versioning](https://semver.org/lang/es/).
 
 ## [0.3.1] 28-09-2025
 
+### Added
+
 - Mejora gráfica del tablero para el CLI
 - Implementación de atributos para la clase Dice
 - Implementación del método roll para la clase Dice
@@ -42,6 +58,8 @@ y este proyecto sigue [Semantic Versioning](https://semver.org/lang/es/).
 - Tests para la clase Dice
 
 ## [0.3.0] 24-09-2025
+
+### Added
 
 - Implementación del método mostrar_tablero_cli en la clase Board para representar el tablero de Backgammon en la consola con triángulos y detalles de fichas.
 

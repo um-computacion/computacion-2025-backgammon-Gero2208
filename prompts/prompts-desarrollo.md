@@ -679,3 +679,144 @@ class Game:
                 self.__turno__ = 1
                 return (self.__p2__, tiro_p1, tiro_p2)
             # empate -> repetir
+
+## Prompt
+
+### Para hacer la captura de fichas conviene hacer un método nuevo o implementarlo en mover?
+
+## Response
+
+Implementarlo dentro de mover. La captura es parte del acto de mover (validación + efectos sobre el tablero), así que conviene que mover haga la captura. Para claridad puedes extraer la lógica de captura a una función privada si crece, pero la operación debe ejecutarse en mover.
+
+Patch mínimo (añade captura: si en destino hay 1 ficha rival, la envía a la barra):
+
+ filepath: c:\Users\Gero\Desktop\Giga carpeta\computacion-2025-backgammon-Gero2208\backgammon\core\checkers.py
+ ...existing code...
+    def mover(board, jugador, origen, destino, dado):
+        Checkers.es_movimiento_valido(board, jugador, origen, destino, dado)
+        color = jugador.color()
+        puntos = board.__points__
+
+        # captura: si en destino hay 1 ficha y es rival -> enviarla a la barra
+        if puntos[destino] and puntos[destino][0] != color and len(puntos[destino]) == 1:
+            enemigo_color = puntos[destino].pop()
+            if not hasattr(board, "__bar__"):
+                board.__bar__ = {"blanco": [], "negro": []}
+            board.__bar__.setdefault(enemigo_color, []).append(enemigo_color)
+
+        # mover la ficha desde origen a destino
+        puntos[origen].pop()
+        puntos[destino].append(color)
+ ...existing code...
+
+Si prefieres mantener mover pequeño, extrae esa sección a un helper Checkers._capturar(board, enemigo_color, destino) y llámalo desde mover.
+
+
+## Prompt
+
+### Que es lo que realiza eso, updatea el texto de barra y elimina la ficha? acuerdate que tambien falta la logica para que al sacar una ficha no pueda jugar hasta que no saque los valores de dados donde pueda mover la ficha, se me ocurre que podriamos usar el mismo destinos posibles para solo esa ficha continuamente
+
+## Response
+
+Explicación corta:
+
+Actualmente mover(...) quita la ficha del origen y la añade al destino; si en destino había 1 ficha rival la quita y la añade a board.bar — mostrar_tablero_cli() luego imprime las longitudes de bar y final, así que la barra se actualiza visualmente.
+Falta la lógica que obligue a reingresar fichas desde la barra antes de poder mover otras fichas. Abajo añado métodos simples en Checkers para calcular entradas desde la barra, reingresar (con captura) y un fragmento de CLI que fuerza el reingreso usando destinos_posibles/puede_reingresar con los dados restantes.
+Patch para checkers.py (añade métodos simples para entrada desde la barra y reingreso):
+
+    @staticmethod
+    def destino_entrada_por_dado(jugador, dado):
+        """
+        Devuelve el índice de punto donde se intenta entrar desde la barra
+        para un dado dado, según la dirección del jugador.
+        """
+        direccion = jugador.direccion()
+        if direccion == 1:
+            return dado - 1        # dados 1..6 -> índices 0..5
+        else:
+            return 24 - dado       # dados 1..6 -> índices 23..18
+
+    @staticmethod
+    def puede_reingresar(board, jugador, dado):
+        """
+        Comprueba si con el valor 'dado' se puede reingresar una ficha desde la barra.
+        Devuelve el índice destino (int) si es posible, o None si no.
+        """
+        destino = Checkers.destino_entrada_por_dado(jugador, dado)
+        if destino < 0 or destino > 23:
+            return None
+        puntos = board.__points__
+        color = jugador.color()
+        # vacío -> posible
+        if not puntos[destino]:
+            return destino
+        # propio -> posible
+        if puntos[destino][0] == color:
+            return destino
+        # una ficha rival -> posible (captura)
+        if len(puntos[destino]) == 1:
+            return destino
+        # dos o más rivales -> no posible
+        return None
+
+    @staticmethod
+    def reingresar_desde_bar(board, jugador, dado):
+        """
+        Ejecuta la entrada desde la barra usando 'dado'. Lanza MovimientoInvalido si no se puede.
+        Actualiza board.__bar__ y board.__points__, y realiza captura si corresponde.
+        """
+        destino = Checkers.puede_reingresar(board, jugador, dado)
+        if destino is None:
+            raise MovimientoInvalido("No puedes reingresar con ese dado.")
+        color = jugador.color()
+        # quitar ficha de la barra
+        board.__bar__[color].pop()
+        # captura si hay una ficha rival
+        if board.__points__[destino] and board.__points__[destino][0] != color and len(board.__points__[destino]) == 1:
+            enemigo_color = board.__points__[destino].pop()
+            board.__bar__[enemigo_color].append(enemigo_color)
+        # colocar la ficha reingresada
+        board.__points__[destino].append(color)
+
+PARA EL CLI:
+    
+      # Si el jugador tiene fichas en la barra, obligar a reingresar primero
+            color_actual = game.jugador_actual().color()
+            if board.__bar__.get(color_actual):
+                # calcula entradas posibles con los dados restantes
+                entradas = []
+                for d in movimientos_restantes:
+                    dest = Checkers.puede_reingresar(board, game.jugador_actual(), d)
+                    if dest is not None:
+                        entradas.append((d, dest))
+                if not entradas:
+                    print("Tienes fichas en la barra pero no puedes reingresar con los dados restantes.")
+                    break  # termina el turno
+                # mostrar opciones simples: dado -> punto destino (usuario ve puntos 1..24)
+                print("Debes reingresar una ficha desde la barra.")
+                print(f"Entradas posibles: {[ (d, dest+1) for d, dest in entradas ]}")
+                try:
+                    dado_elegido = int(input("Qué dado quieres usar para reingresar? "))
+                except ValueError:
+                    print("Entrada inválida.")
+                    continue
+                if dado_elegido not in movimientos_restantes:
+                    print("No tienes ese dado disponible.")
+                    continue
+                try:
+                    Checkers.reingresar_desde_bar(board, game.jugador_actual(), dado_elegido)
+                    movimientos_restantes.remove(dado_elegido)
+                    # mostrar tablero solo si quedan movimientos por hacer
+                    if movimientos_restantes:
+                        board.mostrar_tablero_cli()
+                        print(f"Dados restantes: {movimientos_restantes}")
+                    continue
+                except MovimientoInvalido as e:
+                    print(f"Error: {e}")
+                    continue
+
+## Prompt
+
+### Hay un error y es que al conseguir dados dobles y seleccionar una casilla desde donde quieres mover, sale repetido 4 veces el lugar a donde puedes mover desde esa casilla, como lo puedo solucionar?
+
+## Response
