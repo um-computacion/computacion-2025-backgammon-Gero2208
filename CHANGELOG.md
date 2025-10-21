@@ -5,6 +5,10 @@ Todas las modificaciones notables de este proyecto serán documentadas en este a
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/),
 y este proyecto sigue [Semantic Versioning](https://semver.org/lang/es/).
 
+## [0.4.2] 20-10-2025
+
+- Implementación de método para la clase Game para elegir quien inicia la partida
+
 ## [0.4.1] 20-10-2025
 
 - Implementación de lógica para el sistema de movimientos
