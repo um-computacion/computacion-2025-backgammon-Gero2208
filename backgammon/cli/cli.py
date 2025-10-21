@@ -42,6 +42,40 @@ def main():
         print(f"Dados restantes: {movimientos_restantes}")
 
         while movimientos_restantes:
+            # Si el jugador tiene fichas en la barra, obligar a reingresar primero
+            color_actual = game.jugador_actual().color()
+            if board.__bar__.get(color_actual):
+                # calcula entradas posibles con los dados restantes
+                entradas = []
+                for d in movimientos_restantes:
+                    dest = Checkers.puede_reingresar(board, game.jugador_actual(), d)
+                    if dest is not None:
+                        entradas.append((d, dest))
+                if not entradas:
+                    print("Tienes fichas en la barra pero no puedes reingresar con los dados restantes.")
+                    break  # termina el turno
+                # mostrar opciones simples: dado -> punto destino (usuario ve puntos 1..24)
+                print("Debes reingresar una ficha desde la barra.")
+                print(f"Entradas posibles: {[ (d, dest+1) for d, dest in entradas ]}")
+                try:
+                    dado_elegido = int(input("Qué dado quieres usar para reingresar? "))
+                except ValueError:
+                    print("Entrada inválida.")
+                    continue
+                if dado_elegido not in movimientos_restantes:
+                    print("No tienes ese dado disponible.")
+                    continue
+                try:
+                    Checkers.reingresar_desde_bar(board, game.jugador_actual(), dado_elegido)
+                    movimientos_restantes.remove(dado_elegido)
+                    # mostrar tablero solo si quedan movimientos por hacer
+                    if movimientos_restantes:
+                        board.mostrar_tablero_cli()
+                        print(f"Dados restantes: {movimientos_restantes}")
+                    continue
+                except MovimientoInvalido as e:
+                    print(f"Error: {e}")
+                    continue
             try:
                 origen = int(input("Desde qué punto quieres mover? ")) - 1
                 destinos = Checkers.destinos_posibles(board, game.jugador_actual(), origen, movimientos_restantes)
