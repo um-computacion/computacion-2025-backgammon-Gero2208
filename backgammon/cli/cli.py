@@ -27,6 +27,9 @@ def main():
 
     game = Game(p1, p2)
 
+    ganador, tiro_p1, tiro_p2 = game.decidir_iniciador()
+    print(f"{ganador.nombre()} comienza (tiradas: {tiro_p1} vs {tiro_p2})")
+
     dado = Dice()
     
     while True:

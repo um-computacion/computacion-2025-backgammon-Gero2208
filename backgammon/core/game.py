@@ -32,3 +32,23 @@ class Game:
         Alterna el turno entre los dos jugadores.
         """
         self.__turno__ = 1 - self.__turno__
+    
+    def decidir_iniciador(self):
+        """
+        Decide quién inicia la partida lanzando un dado (1-6) por cada jugador.
+        Si hay empate se repite hasta que haya un ganador.
+        Establece self.__turno__ al ganador (0 para p1, 1 para p2) y devuelve
+        una tupla (jugador_ganador, tiro_p1, tiro_p2).
+        """
+        import random
+        while True:
+            tiro_p1 = random.randint(1, 6)
+            tiro_p2 = random.randint(1, 6)
+            if tiro_p1 > tiro_p2:
+                self.__turno__ = 0
+                return (self.__p1__, tiro_p1, tiro_p2)
+            elif tiro_p2 > tiro_p1:
+                self.__turno__ = 1
+                return (self.__p2__, tiro_p1, tiro_p2)
+            elif tiro_p1 == tiro_p2:
+                continue
