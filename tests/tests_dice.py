@@ -1,5 +1,5 @@
 import unittest
-from backgammon.core.dice import Dice
+from core.dice import Dice
 
 class TestDice(unittest.TestCase):
 

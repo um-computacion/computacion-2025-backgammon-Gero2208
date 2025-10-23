@@ -1,5 +1,5 @@
 import unittest
-from backgammon.core.game import Game
+from core.game import Game
 
 class DummyPlayer:
     def __init__(self, nombre):
