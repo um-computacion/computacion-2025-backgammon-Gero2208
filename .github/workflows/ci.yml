@@ -35,9 +35,15 @@ jobs:
 
       - name: Run tests and generate coverage report
         run: |
-          coverage run -m unittest discover -s tests -p "test*.py"
-          coverage xml -o cobertura.xml
-          coverage report -m > coverage_report.txt
+          if [ -d tests ]; then
+            # Ensure repo root is importable so test discovery can import package modules
+            export PYTHONPATH="${PYTHONPATH}:$PWD"
+            # Run unittest discovery (do NOT pass -t .) so start directory is not required to be importable
+            coverage run -m unittest discover -s tests -p "test*.py"
+            # Generate reports if coverage data exists; don't fail the job if generation fails
+            coverage xml -o cobertura.xml || true
+            coverage report -m > coverage_report.txt || true
+          fi
 
       - name: Run Pylint and generate report
         run: |
