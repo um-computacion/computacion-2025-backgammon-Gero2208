@@ -52,3 +52,24 @@ class Game:
                 return (self.__p2__, tiro_p1, tiro_p2)
             elif tiro_p1 == tiro_p2:
                 continue
+    
+    def ganador(self, board):
+        """
+        Devuelve el Player que ya ha sacado todas sus fichas (bear-off >= 15),
+        o None si aún no hay ganador.
+
+        Comprueba tanto el atributo mangled (__off__) como el no-mangled (off).
+        """
+        try:
+            off = board.__off__
+        except AttributeError:
+            off = getattr(board, "off", {})
+
+        p1_color = self.__p1__.color()
+        p2_color = self.__p2__.color()
+
+        if off.get(p1_color, 0) >= 15:
+            return self.__p1__
+        if off.get(p2_color, 0) >= 15:
+            return self.__p2__
+        return None
