@@ -5,6 +5,14 @@ Todas las modificaciones notables de este proyecto serán documentadas en este a
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/),
 y este proyecto sigue [Semantic Versioning](https://semver.org/lang/es/).
 
+## [0.5.0] 25-10-2025
+
+### Added
+
+- Implementación lógica para el sistema de bear_off, sacar fichas del tablero una vez llegado a la zona de home para ganar
+- Implementación de los métodos todas_en_inicio, distancia_desde_origen, puede_bear_off y bear_off para la clase Checkers
+- Implementación del método ganador para la clase Game
+
 ## [0.4.2] 21-10-2025
 
 ### Added

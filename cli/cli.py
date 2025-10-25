@@ -1,8 +1,8 @@
-from ..core.player import Player
-from ..core.board import Board
-from ..core.game import Game
-from ..core.dice import Dice
-from ..core.checkers import Checkers, MovimientoInvalido
+from core.player import Player
+from core.board import Board
+from core.game import Game
+from core.dice import Dice
+from core.checkers import Checkers, MovimientoInvalido
 
 def main():
     print("Iniciando Backgammon")

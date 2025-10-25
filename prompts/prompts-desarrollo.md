@@ -818,6 +818,131 @@ PARA EL CLI:
 
 ## Prompt
 
-### Hay un error y es que al conseguir dados dobles y seleccionar una casilla desde donde quieres mover, sale repetido 4 veces el lugar a donde puedes mover desde esa casilla, como lo puedo solucionar?
+### Que otros metodos deberia agregar para hacer la logica de salida de fichas para la victoria?
 
 ## Response
+
+# ...existing code...
+
+    @staticmethod
+    def distance_a_salir(jugador, origen) -> int:
+        """Distancia en puntos para salir desde 'origen' según dirección del jugador."""
+        direccion = jugador.direccion()
+        if direccion == 1:
+            return 24 - origen
+        else:
+            return origen + 1
+
+    @staticmethod
+    def hay_ficha_mas_lejos_en_home(board, jugador, origen) -> bool:
+        """
+        True si en la zona de casa hay fichas propias 'más lejos' de salir que el origen.
+        Implementación programática (no ifs por posición).
+        """
+        color = jugador.color()
+        direccion = jugador.direccion()
+        puntos = board.__points__
+
+        if direccion == 1:
+            # casa 18..23, 'más lejos' son índices 18..(origen-1)
+            start, end = 18, origen - 1
+            if start > end:
+                return False
+            for i in range(start, end + 1):
+                if puntos[i] and puntos[i][0] == color:
+                    return True
+            return False
+        else:
+            # direccion == -1, casa 0..5, 'más lejos' son índices (origen+1)..5
+            start, end = origen + 1, 5
+            if start > end:
+                return False
+            for i in range(start, end + 1):
+                if puntos[i] and puntos[i][0] == color:
+                    return True
+            return False
+
+    @staticmethod
+    def puede_bear_off_con_dado(board, jugador, origen: int, dado: int) -> bool:
+        """
+        Decide si se puede sacar una ficha desde 'origen' usando 'dado'.
+        Usa distance_a_salir y hay_ficha_mas_lejos_en_home.
+        """
+        color = jugador.color()
+        direccion = jugador.direccion()
+        puntos = board.__points__
+
+        # validaciones básicas
+        if not (0 <= origen <= 23):
+            return False
+        if not puntos[origen] or puntos[origen][0] != color:
+            return False
+        if not (1 <= dado <= 6):
+            return False
+        # debe estar todo en casa y nada en la barra
+        if board.__bar__.get(color):
+            return False
+        # comprobar que todas las fichas están en la casa (si ya existe función, úsala)
+        if not Checkers.todas_en_inicio(board, jugador):
+            return False
+
+        distancia = Checkers.distance_a_salir(jugador, origen)
+        if dado == distancia:
+            return True
+        if dado > distancia:
+            # sólo permitido si no hay fichas más lejos en casa
+            return not Checkers.hay_ficha_mas_lejos_en_home(board, jugador, origen)
+        return False
+
+    @staticmethod
+    def bear_off_con_dado(board, jugador, origen: int, dado: int):
+        """
+        Ejecuta la salida (bear-off) desde 'origen' con 'dado'.
+        Lanza MovimientoInvalido si no es legal. Actualiza __points__ y __off__.
+        """
+        if not Checkers.puede_bear_off_con_dado(board, jugador, origen, dado):
+            raise MovimientoInvalido("No puedes sacar esa ficha con ese dado.")
+        color = jugador.color()
+        puntos = board.__points__
+
+        # quitar la ficha del origen
+        if not puntos[origen] or puntos[origen][0] != color:
+            raise MovimientoInvalido("No hay ficha propia en el origen para salir.")
+        puntos[origen].pop()
+
+        # asegurar dict __off__
+        if "__off__" not in board.__dict__:
+            board.__off__ = {"blanco": 0, "negro": 0}
+        board.__off__[color] = board.__off__.get(color, 0) + 1
+
+    @staticmethod
+    def destinos_bear_off(board, jugador, origen, dados):
+        """Devuelve la lista de dados (valores) de 'dados' que permiten sacar la ficha en 'origen'."""
+        validos = []
+        for d in dados:
+            if Checkers.puede_bear_off_con_dado(board, jugador, origen, d):
+                validos.append(d)
+        return validos
+
+    @staticmethod
+    def bear_off_y_consumir(board, jugador, origen, dados):
+        """
+        Intenta hacer bear-off desde 'origen' consumiendo uno de los 'dados'.
+        Devuelve la lista de dados restantes.
+        Lanza MovimientoInvalido si no es posible con los dados dados.
+        """
+        posible = Checkers.destinos_bear_off(board, jugador, origen, dados)
+        if not posible:
+            raise MovimientoInvalido("No puedes hacer bear-off desde ese origen con los dados disponibles.")
+        dado_usado = posible[0]  # política: usa el primer dado válido (la UI puede elegir otro)
+        Checkers.bear_off_con_dado(board, jugador, origen, dado_usado)
+        restantes = dados.copy()
+        restantes.remove(dado_usado)
+        return restantes
+
+    @staticmethod
+    def es_ganador(board, jugador) -> bool:
+        """True si el jugador ya sacó todas sus fichas (off == 15)."""
+        color = jugador.color()
+        off = board.__off__.get(color, 0) if "__off__" in board.__dict__ else 0
+        return off >= 15
