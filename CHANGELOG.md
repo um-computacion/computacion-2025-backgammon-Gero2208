@@ -12,6 +12,8 @@ y este proyecto sigue [Semantic Versioning](https://semver.org/lang/es/).
 - Implementación lógica para el sistema de bear_off, sacar fichas del tablero una vez llegado a la zona de home para ganar
 - Implementación de los métodos todas_en_inicio, distancia_desde_origen, puede_bear_off y bear_off para la clase Checkers
 - Implementación del método ganador para la clase Game
+- Implementación de cambios en CLI para gestionar el bear off y declarar ganador
+- Corrección de bug, crashea el CLI al intentar sacar fichas del tablero para bear off 
 
 ## [0.4.2] 21-10-2025
 
