@@ -44,7 +44,7 @@ def main():
         while movimientos_restantes:
             # Si el jugador tiene fichas en la barra, obligar a reingresar primero
             color_actual = game.jugador_actual().color()
-            if board.__bar__.get(color_actual):
+            if board.get_bar().get(color_actual):
                 # calcula entradas posibles con los dados restantes
                 entradas = []
                 for d in movimientos_restantes:
@@ -76,6 +76,33 @@ def main():
                 except MovimientoInvalido as e:
                     print(f"Error: {e}")
                     continue
+            # Bear off
+            if Checkers.todas_en_inicio(board, game.jugador_actual()):
+                print("Tus fichas estan en casa, puedes sacarlas del tablero")
+                accion = input("Quieres mover (m) o sacar (s) una ficha? ").lower()
+                if accion == 's':
+                    try:
+                        origen = int(input("Desde qué punto quieres sacar la ficha? ")) - 1
+                        dado_str = input(f"Qué dado quieres usar para sacar desde {origen+1}? Tienes {movimientos_restantes}: ")
+                        dado = int(dado_str)
+                        if dado not in movimientos_restantes:
+                            print("No tienes ese dado.")
+                            continue
+                        Checkers.bear_off(board, game.jugador_actual(), origen, dado)
+                        movimientos_restantes.remove(dado)
+                        if movimientos_restantes:
+                            board.mostrar_tablero_cli()
+                            print(f"Dados restantes: {movimientos_restantes}")
+                        continue
+                    except MovimientoInvalido as e:
+                        print(f"Error: {e}")
+                        continue
+                    except ValueError:
+                        print("Entrada inválida.")
+                        continue
+                elif accion != 'm':
+                    print("Acción no válida. Por favor, elige 'm' para mover o 's' para sacar.")
+                    continue
             try:
                 origen = int(input("Desde qué punto quieres mover? ")) - 1
                 destinos = Checkers.destinos_posibles(board, game.jugador_actual(), origen, movimientos_restantes)
@@ -85,31 +112,29 @@ def main():
                         print("No quedan movimientos posibles con los dados restantes.")
                         break
                     continue
-
                 print(f"Puedes mover desde {origen+1} a las casillas: {[d+1 for d in destinos]}")
                 destino = int(input("A qué punto quieres mover? ")) - 1
-
                 movimientos_restantes = Checkers.mover_y_consumir(
                     board, game.jugador_actual(), origen, destino, movimientos_restantes
                 )
-
-                # Mostrar tablero solo si quedan movimientos por hacer en este turno
                 if movimientos_restantes:
                     board.mostrar_tablero_cli()
                     print(f"Dados restantes: {movimientos_restantes}")
-
             except MovimientoInvalido as e:
                 print(f"Error: {e}")
             except ValueError:
                 print("Entrada inválida.")
             except Exception as e:
                 print(f"Error inesperado: {e}")
-
             if movimientos_restantes and not Checkers.hay_movimientos_posibles(board, game.jugador_actual(), movimientos_restantes):
                 print("No quedan movimientos posibles con los dados restantes.")
                 break
 
+        ganador_actual = game.ganador(board)
+        if ganador_actual:
+            print(f"Felicidades, {ganador_actual.nombre()}! Has ganado la partida.")
+            board.mostrar_tablero_cli()
+            break
         game.cambiar_turno()
-
 if __name__ == '__main__':
     main()

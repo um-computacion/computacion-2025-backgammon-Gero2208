@@ -15,6 +15,18 @@ class Board:
         self.__points__ = [[] for _ in range(24)]
         self.__bar__ = {"blanco": [], "negro": []}
         self.__final__ = {"blanco": [], "negro": []}
+    
+    def get_bar(self):
+        return self.__bar__
+
+    def get_points(self):
+        return self.__points__
+
+    def increment_final(self, color):
+        self.__final__[color].append(color)
+
+    def get_final(self):
+        return self.__final__
 
     def setup(self, color1, color2):
         """
