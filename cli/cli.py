@@ -84,12 +84,12 @@ def main():
                     try:
                         origen = int(input("Desde qué punto quieres sacar la ficha? ")) - 1
                         dado_str = input(f"Qué dado quieres usar para sacar desde {origen+1}? Tienes {movimientos_restantes}: ")
-                        dado = int(dado_str)
-                        if dado not in movimientos_restantes:
+                        dado_a_usar = int(dado_str)
+                        if dado_a_usar not in movimientos_restantes:
                             print("No tienes ese dado.")
                             continue
-                        Checkers.bear_off(board, game.jugador_actual(), origen, dado)
-                        movimientos_restantes.remove(dado)
+                        Checkers.bear_off(board, game.jugador_actual(), origen, dado_a_usar)
+                        movimientos_restantes.remove(dado_a_usar)
                         if movimientos_restantes:
                             board.mostrar_tablero_cli()
                             print(f"Dados restantes: {movimientos_restantes}")
