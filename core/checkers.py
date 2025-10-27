@@ -1,6 +1,4 @@
-class MovimientoInvalido(Exception):
-    """Excepción para movimientos inválidos en Backgammon."""
-    pass
+from .exceptions import MovimientoInvalido
 
 class Checkers:
     @staticmethod

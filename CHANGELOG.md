@@ -13,7 +13,8 @@ y este proyecto sigue [Semantic Versioning](https://semver.org/lang/es/).
 - Implementación de los métodos todas_en_inicio, distancia_desde_origen, puede_bear_off y bear_off para la clase Checkers
 - Implementación del método ganador para la clase Game
 - Implementación de cambios en CLI para gestionar el bear off y declarar ganador
-- Corrección de bug, crashea el CLI al intentar sacar fichas del tablero para bear off 
+- Corrección de bug, crashea el CLI al intentar sacar fichas del tablero para bear off
+- Implementación de la Single Responsability Principle de los principios SOLID para la clase Game
 
 ## [0.4.2] 21-10-2025
 

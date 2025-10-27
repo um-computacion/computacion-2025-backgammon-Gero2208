@@ -822,8 +822,6 @@ PARA EL CLI:
 
 ## Response
 
-# ...existing code...
-
     @staticmethod
     def distance_a_salir(jugador, origen) -> int:
         """Distancia en puntos para salir desde 'origen' según dirección del jugador."""
@@ -946,3 +944,33 @@ PARA EL CLI:
         color = jugador.color()
         off = board.__off__.get(color, 0) if "__off__" in board.__dict__ else 0
         return off >= 15
+
+## Prompt (Se utilizó Jules)
+
+### Debo implementar el SOLID. Para ello uno de los principios es la single responsability principle, por lo que quiero que hagas cambios en el código para que funcione exactamente igual, pero todos los imports de las clases deben estar en la clase game y el CLI solo debe hablar con la clase game y también con la clase Exceptions ya que quiero que ademas crees una nueva clase para todas las excepciones
+
+## Response
+
+Crear una nueva clase BackgammonException en un archivo core/exceptions.py.
+
+Esta clase servirá como base para todas las excepciones personalizadas del juego.
+
+La excepción MovimientoInvalido se moverá a este archivo y heredará de BackgammonException.
+Refactorizar la clase Game en core/game.py para que sea la única responsable de la lógica del juego.
+
+Refactorizar la clase Checkers en core/checkers.py para que utilice la nueva clase de excepciones.
+
+Se actualizarán todas las referencias a MovimientoInvalido para que apunten a la nueva clase en core/exceptions.py.
+
+Refactorizar la CLI en cli/cli.py para que solo interactúe con la clase Game y BackgammonException.
+
+Se eliminarán todos los imports directos a Player, Board, Dice y Checkers.
+
+La CLI se simplificará para que solo se encargue de la entrada/salida del usuario y de llamar a los métodos de la clase Game.
+Completar los pasos previos al commit.
+
+Se realizarán los pasos necesarios para garantizar que las pruebas, la verificación, la revisión y la reflexión se lleven a cabo correctamente.
+
+Enviar el cambio.
+
+Una vez que todas las pruebas pasen, enviaré el cambio con un mensaje de commit descriptivo.
