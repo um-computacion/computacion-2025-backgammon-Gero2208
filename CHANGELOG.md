@@ -5,6 +5,18 @@ Todas las modificaciones notables de este proyecto serán documentadas en este a
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/),
 y este proyecto sigue [Semantic Versioning](https://semver.org/lang/es/).
 
+## [0.5.1] 27-10-2025
+
+### Added
+
+-Implementación de tests unitarios para la clase Board
+-Implementación de tests unitarios para la clase Checkers
+-Implementación de tests unitarios para el CLI
+-Implementación de tests unitarios para la clase Dice
+-Implementación de tests unitarios para la clase Game
+-Implementación de tests unitarios para la clase Player
+-Cambios en el CLI para facilitar los tests unitarios para este
+
 ## [0.5.0] 25-10-2025
 
 ### Added

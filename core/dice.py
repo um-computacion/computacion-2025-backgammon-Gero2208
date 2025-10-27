@@ -39,3 +39,7 @@ class Dice:
             return [self.__valor__[0]] * 4 
         else:
             return self.__valor__
+    
+    def set_valor(self, valor):
+        """Sets the dice values for testing purposes."""
+        self.__valor__ = valor
