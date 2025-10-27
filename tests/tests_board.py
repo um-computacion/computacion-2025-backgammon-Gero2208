@@ -3,29 +3,42 @@ from core.board import Board
 
 class TestBoard(unittest.TestCase):
 
-    def setUp(self):
-        self.board = Board()
-        self.board.setup("blanco", "negro")
+    def test_board_initialization(self):
+        board = Board()
+        self.assertEqual(len(board.get_points()), 24)
+        self.assertTrue(all(p == [] for p in board.get_points()))
+        self.assertEqual(board.get_bar(), {"blanco": [], "negro": []})
+        self.assertEqual(board.get_final(), {"blanco": [], "negro": []})
 
-    def test_setup_fichas_blanco(self):
-        self.assertEqual(self.board.__points__[0], ["blanco"] * 2)
-        self.assertEqual(self.board.__points__[11], ["blanco"] * 5)
-        self.assertEqual(self.board.__points__[16], ["blanco"] * 3)
-        self.assertEqual(self.board.__points__[18], ["blanco"] * 5)
+    def test_board_setup(self):
+        board = Board()
+        board.setup("blanco", "negro")
 
-    def test_setup_fichas_negro(self):
-        self.assertEqual(self.board.__points__[23], ["negro"] * 2)
-        self.assertEqual(self.board.__points__[12], ["negro"] * 5)
-        self.assertEqual(self.board.__points__[7], ["negro"] * 3)
-        self.assertEqual(self.board.__points__[5], ["negro"] * 5)
+        # Puntos con fichas blancas
+        self.assertEqual(board.get_points()[0], ["blanco"] * 2)
+        self.assertEqual(board.get_points()[11], ["blanco"] * 5)
+        self.assertEqual(board.get_points()[16], ["blanco"] * 3)
+        self.assertEqual(board.get_points()[18], ["blanco"] * 5)
 
-    def test_barra_vacia(self):
-        self.assertEqual(self.board.__bar__["blanco"], [])
-        self.assertEqual(self.board.__bar__["negro"], [])
+        # Puntos con fichas negras
+        self.assertEqual(board.get_points()[23], ["negro"] * 2)
+        self.assertEqual(board.get_points()[12], ["negro"] * 5)
+        self.assertEqual(board.get_points()[7], ["negro"] * 3)
+        self.assertEqual(board.get_points()[5], ["negro"] * 5)
 
-    def test_final_vacio(self):
-        self.assertEqual(self.board.__final__["blanco"], [])
-        self.assertEqual(self.board.__final__["negro"], [])
+        # Puntos vacíos
+        puntos_vacios = [1, 2, 3, 4, 6, 8, 9, 10, 13, 14, 15, 17, 19, 20, 21, 22]
+        for p in puntos_vacios:
+            self.assertFalse(board.get_points()[p])
 
-if __name__ == "__main__":
+    def test_increment_final(self):
+        board = Board()
+        board.increment_final("blanco")
+        self.assertEqual(board.get_final()["blanco"], ["blanco"])
+        board.increment_final("blanco")
+        self.assertEqual(board.get_final()["blanco"], ["blanco", "blanco"])
+        board.increment_final("negro")
+        self.assertEqual(board.get_final()["negro"], ["negro"])
+
+if __name__ == '__main__':
     unittest.main()

@@ -3,25 +3,25 @@ from core.dice import Dice
 
 class TestDice(unittest.TestCase):
 
-    def test_valor_inicial(self):
-        dado = Dice()
-        self.assertEqual(dado.__valor__, [0, 0])
+    def test_dice_roll(self):
+        dice = Dice()
+        values = dice.roll()
+        self.assertEqual(len(values), 2)
+        self.assertTrue(all(1 <= v <= 6 for v in values))
 
-    def test_roll_rango(self):
-        dado = Dice()
-        valores = dado.roll()
-        self.assertTrue(1 <= valores[0] <= 6)
-        self.assertTrue(1 <= valores[1] <= 6)
+    def test_dice_doubles(self):
+        dice = Dice()
+        dice.set_valor([1, 1])
+        self.assertTrue(dice.dobles())
+        dice.set_valor([1, 2])
+        self.assertFalse(dice.dobles())
 
-    def test_dobles_true(self):
-        dado = Dice()
-        dado.__valor__ = [5, 5]
-        self.assertTrue(dado.dobles())
+    def test_dice_duplicar(self):
+        dice = Dice()
+        dice.set_valor([1, 1])
+        self.assertEqual(dice.duplicar(), [1, 1, 1, 1])
+        dice.set_valor([1, 2])
+        self.assertEqual(dice.duplicar(), [1, 2])
 
-    def test_dobles_false(self):
-        dado = Dice()
-        dado.__valor__ = [2, 6]
-        self.assertFalse(dado.dobles())
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

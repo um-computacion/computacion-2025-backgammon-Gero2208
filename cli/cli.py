@@ -2,6 +2,56 @@ from core.player import Player
 from core.game import Game
 from core.exceptions import BackgammonException
 
+def procesar_turno(game, entrada_usuario):
+    """
+    Procesa un solo movimiento o acción del jugador basado en la entrada.
+    Devuelve True si la acción fue exitosa, False en caso contrario.
+    """
+    try:
+        partes = entrada_usuario.split()
+        comando = partes[0].lower()
+
+        if game.jugador_tiene_fichas_en_barra():
+            if comando == 'reingresar' and len(partes) == 2:
+                dado = int(partes[1])
+                game.reingresar_desde_barra(dado)
+                return True
+            else:
+                print("Comando inválido. Debes usar: reingresar <dado>")
+                return False
+
+        elif game.todas_fichas_en_casa():
+            if comando == 'sacar' and len(partes) == 3:
+                origen = int(partes[1]) - 1
+                dado = int(partes[2])
+                game.sacar_ficha(origen, dado)
+                return True
+            elif comando == 'mover' and len(partes) == 3:
+                origen = int(partes[1]) - 1
+                destino = int(partes[2]) - 1
+                game.mover_ficha(origen, destino)
+                return True
+            else:
+                print("Comando inválido. Usa: sacar <origen> <dado> o mover <origen> <destino>")
+                return False
+
+        else:
+            if comando == 'mover' and len(partes) == 3:
+                origen = int(partes[1]) - 1
+                destino = int(partes[2]) - 1
+                game.mover_ficha(origen, destino)
+                return True
+            else:
+                print("Comando inválido. Usa: mover <origen> <destino>")
+                return False
+
+    except (ValueError, IndexError):
+        print("Entrada inválida. Asegúrate de que los números son correctos.")
+        return False
+    except BackgammonException as e:
+        print(f"Error: {e}")
+        return False
+
 def main():
     print("Iniciando Backgammon")
 
@@ -36,48 +86,13 @@ def main():
             if not game.hay_movimientos_posibles():
                 print("No tienes movimientos posibles con los dados restantes.")
                 break
+            
+            entrada = input("Introduce tu jugada: ")
+            procesar_turno(game, entrada)
 
-            try:
-                if game.jugador_tiene_fichas_en_barra():
-                    entradas = game.posibles_entradas_desde_barra()
-                    print("Debes reingresar una ficha desde la barra.")
-                    print(f"Entradas posibles: {[(d, dest + 1) for d, dest in entradas]}")
-                    dado_elegido = int(input("¿Qué dado quieres usar para reingresar? "))
-                    game.reingresar_desde_barra(dado_elegido)
-
-                elif game.todas_fichas_en_casa():
-                    accion = input("¿Quieres mover (m) o sacar (s) una ficha? ").lower()
-                    if accion == 's':
-                        origen = int(input("¿Desde qué punto quieres sacar la ficha? ")) - 1
-                        dado_a_usar = int(input(f"¿Qué dado quieres usar para sacar desde {origen + 1}? Tienes {game.movimientos_restantes}: "))
-                        game.sacar_ficha(origen, dado_a_usar)
-                    elif accion == 'm':
-                        origen = int(input("¿Desde qué punto quieres mover? ")) - 1
-                        destinos = game.validar_origen_y_obtener_destinos(origen)
-                        print(f"Puedes mover desde {origen + 1} a las casillas: {[d + 1 for d in destinos]}")
-                        destino = int(input("¿A qué punto quieres mover? ")) - 1
-                        game.mover_ficha(origen, destino)
-                    else:
-                        print("Acción no válida. Por favor, elige 'm' para mover o 's' para sacar.")
-                        continue
-                
-                else:
-                    origen = int(input("¿Desde qué punto quieres mover? ")) - 1
-                    destinos = game.validar_origen_y_obtener_destinos(origen)
-                    print(f"Puedes mover desde {origen + 1} a las casillas: {[d + 1 for d in destinos]}")
-                    destino = int(input("¿A qué punto quieres mover? ")) - 1
-                    game.mover_ficha(origen, destino)
-
-                if game.movimientos_restantes:
-                    board.mostrar_tablero_cli()
-                    print(f"Dados restantes: {game.movimientos_restantes}")
-
-            except BackgammonException as e:
-                print(f"Error: {e}")
-            except ValueError:
-                print("Entrada inválida.")
-            except Exception as e:
-                print(f"Error inesperado: {e}")
+            if game.movimientos_restantes:
+                board.mostrar_tablero_cli()
+                print(f"Dados restantes: {game.movimientos_restantes}")
 
         ganador_actual = game.ganador()
         if ganador_actual:
