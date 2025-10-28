@@ -1,3 +1,6 @@
+# Prompts para el testeo del videojuego Backgammon
+## Modelo utilizado: GPT-5 mini (Excepto que se aclare en el prompt)
+
 ## Prompt
 
 ### Haz tests de mis actuales métodos de la clase Dice

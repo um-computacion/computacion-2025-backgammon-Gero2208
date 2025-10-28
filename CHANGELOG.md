@@ -5,6 +5,16 @@ Todas las modificaciones notables de este proyecto serán documentadas en este a
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/),
 y este proyecto sigue [Semantic Versioning](https://semver.org/lang/es/).
 
+## [0.6.0] 28-10-2025
+
+### Added
+
+- Implementación de la interfaz gráfica mediante la biblioteca Pygame
+- Se actualizan los métodos del bear_off para una funcionalidad correcta
+- Corrección de bugs para la lógica de bear_off junto con el método hay_movimientos_posibles
+- Corrección de bugs para la interfaz gráfica donde no dejaba cambiar de turno
+- Mejoras en la explicación de movimientos del CLI
+
 ## [0.5.1] 27-10-2025
 
 ### Added

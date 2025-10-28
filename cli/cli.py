@@ -87,7 +87,14 @@ def main():
                 print("No tienes movimientos posibles con los dados restantes.")
                 break
             
-            entrada = input("Introduce tu jugada: ")
+            # Generar texto de ayuda dinámico
+            prompt = "Jugada (ej: mover <origen> <destino>): "
+            if game.jugador_tiene_fichas_en_barra():
+                prompt = "Jugada (ej: reingresar <dado>): "
+            elif game.todas_fichas_en_casa():
+                prompt = "Jugada (ej: mover <origen> <destino> o sacar <origen> <dado>): "
+            
+            entrada = input(prompt)
             procesar_turno(game, entrada)
 
             if game.movimientos_restantes:
