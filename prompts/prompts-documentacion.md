@@ -1,3 +1,6 @@
+# Prompts para la documentación del videojuego Backgammon
+## Modelo utilizado: GPT-5 mini (Excepto que se aclare en el prompt)
+
 ## Prompt
 
 ### Documenta la clase Dice y los actuales métodos que tiene
