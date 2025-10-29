@@ -1,39 +1,72 @@
 class Board:
     """
-    Representación simple del tablero de Backgammon.
+    Representa el tablero de juego de Backgammon.
 
-    El tablero se modela como una lista de 24 puntos (índices 0 a 23), donde cada punto es una lista de fichas.
-    Cada ficha se representa por el identificador del jugador (por ejemplo: 'jugador1' o 'jugador2').
-    Además, existen dos zonas especiales:
-    - __bar__: fichas capturadas que deben volver a entrar al tablero.
-    - __final__ (borne-off): fichas que ya han salido del tablero.
+    Esta clase gestiona el estado de los 24 puntos del tablero, la barra
+    para fichas capturadas y la zona final para las fichas que han salido.
+    No contiene lógica de movimiento, solo representa el estado del tablero.
 
-    Esta clase proporciona los métodos mínimos para inicializar el tablero y gestionar el estado básico
-    necesario para la lógica y los tests del juego.
+    Atributos:
+        __points__ (list[list[str]]): Una lista de 24 listas, donde cada
+                                     lista interna representa un punto y
+                                     contiene las fichas (por color) en él.
+        __bar__ (dict[str, list[str]]): Un diccionario que almacena las
+                                        fichas capturadas para cada color.
+        __final__ (dict[str, list[str]]): Un diccionario que almacena las
+                                          fichas que han sido sacadas del
+                                          tablero para cada color.
     """
     def __init__(self):
+        """
+        Inicializa un tablero de Backgammon vacío.
+        """
         self.__points__ = [[] for _ in range(24)]
         self.__bar__ = {"blanco": [], "negro": []}
         self.__final__ = {"blanco": [], "negro": []}
     
     def get_bar(self):
+        """
+        Devuelve el estado de la barra.
+
+        Returns:
+            dict[str, list[str]]: El diccionario de la barra.
+        """
         return self.__bar__
 
     def get_points(self):
+        """
+        Devuelve el estado de los puntos del tablero.
+
+        Returns:
+            list[list[str]]: La lista de puntos del tablero.
+        """
         return self.__points__
 
     def increment_final(self, color):
+        """
+        Añade una ficha a la zona final del color especificado.
+
+        Args:
+            color (str): El color de la ficha a añadir.
+        """
         self.__final__[color].append(color)
 
     def get_final(self):
+        """
+        Devuelve el estado de la zona final.
+
+        Returns:
+            dict[str, list[str]]: El diccionario de la zona final.
+        """
         return self.__final__
 
     def setup(self, color1, color2):
         """
-        Coloca las fichas en la disposición inicial estándar de Backgammon.
+        Configura el tablero a la disposición inicial estándar de Backgammon.
 
-        color1: color del primer jugador ('blanco' o 'negro')
-        color2: color del segundo jugador ('blanco' o 'negro')
+        Args:
+            color1 (str): El color del primer jugador.
+            color2 (str): El color del segundo jugador.
         """
         self.__points__ = [[] for _ in range(24)]
         self.__bar__ = {color1: [], color2: []}
@@ -53,10 +86,13 @@ class Board:
 
     def mostrar_tablero_cli(self, alto_col=5, ancho_col=3, simbolos=None):
         """
-        Muestra el tablero de Backgammon en la consola de forma alineada.
-        - alto_col: alto visible de cada columna de fichas (5 por defecto).
-        - ancho_col: ancho fijo de cada celda/columna (3 por defecto).
-        - simbolos: dict opcional {"blanco": "○", "negro": "●"}.
+        Muestra una representación del tablero en la consola.
+
+        Args:
+            alto_col (int): La altura máxima de las columnas de fichas.
+            ancho_col (int): El ancho de cada columna.
+            simbolos (dict, optional): Un diccionario para personalizar los
+                                       símbolos de las fichas.
         """
         # --- Config ---
         if simbolos is None:
@@ -160,4 +196,3 @@ class Board:
         off_blanco = len(self.__final__.get("blanco", []))
         off_negro = len(self.__final__.get("negro", []))
         print(f"\nBarra: Blanco={bar_blanco}  Negro={bar_negro}   |   Final: Blanco={off_blanco}  Negro={off_negro}")
-

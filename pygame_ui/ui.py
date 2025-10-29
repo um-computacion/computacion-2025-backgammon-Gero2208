@@ -25,7 +25,14 @@ ANCHO_BARRA = ANCHO_PICO
 # --- Funciones de Dibujado ---
 
 def dibujar_tablero(pantalla):
-    """Dibuja el tablero de Backgammon."""
+    """
+    Dibuja el tablero de Backgammon en la pantalla.
+
+    Esto incluye el fondo, los picos triangulares y la barra central.
+
+    Args:
+        pantalla (pygame.Surface): La superficie de la pantalla donde dibujar.
+    """
     pantalla.fill(COLOR_FONDO)
 
     # Dibujar los picos
@@ -54,7 +61,15 @@ def dibujar_tablero(pantalla):
                       ANCHO_BARRA, ALTO_VENTANA - 2 * MARGEN))
 
 def dibujar_fichas(pantalla, board):
-    """Dibuja las fichas en el tablero, incluyendo la barra."""
+    """
+    Dibuja las fichas en sus posiciones actuales en el tablero.
+
+    Esto incluye las fichas en los picos y en la barra.
+
+    Args:
+        pantalla (pygame.Surface): La superficie de la pantalla donde dibujar.
+        board (Board): El objeto del tablero que contiene el estado de las fichas.
+    """
     puntos = board.get_points()
     bar = board.get_bar()
     radio_ficha = ANCHO_PICO // 2 - 5
@@ -97,7 +112,16 @@ def dibujar_fichas(pantalla, board):
             pygame.draw.circle(pantalla, (0,0,0), (int(x), int(y)), radio_ficha, 2)
 
 def get_pico_desde_pos(pos):
-    """Convierte una posición (x, y) de la pantalla al índice de un pico del tablero."""
+    """
+    Convierte las coordenadas de la pantalla (x, y) al índice del pico correspondiente.
+
+    Args:
+        pos (tuple[int, int]): Una tupla con las coordenadas x e y del clic.
+
+    Returns:
+        int or None: El índice del pico (0-23) si el clic está en un pico,
+                     o None en caso contrario.
+    """
     x, y = pos
     
     # Fuera de los márgenes verticales
@@ -123,7 +147,15 @@ def get_pico_desde_pos(pos):
         return int(11 - col)
 
 def dibujar_seleccion(pantalla, pico):
-    """Resalta el pico seleccionado."""
+    """
+    Resalta un pico seleccionado en el tablero.
+
+    Dibuja un borde alrededor del pico para indicar que está seleccionado.
+
+    Args:
+        pantalla (pygame.Surface): La superficie de la pantalla donde dibujar.
+        pico (int or None): El índice del pico a resaltar.
+    """
     if pico is None:
         return
 
@@ -148,7 +180,12 @@ def dibujar_seleccion(pantalla, pico):
     pygame.draw.polygon(pantalla, (255, 255, 0, 100), puntos, 5)  # Resaltado amarillo semitransparente
 
 def dibujar_pantalla_inicio(pantalla):
-    """Muestra la pantalla de inicio simplificada."""
+    """
+    Muestra una pantalla de inicio simple.
+
+    Args:
+        pantalla (pygame.Surface): La superficie de la pantalla donde dibujar.
+    """
     fuente = pygame.font.Font(None, 50)
     pantalla.fill(COLOR_FONDO)
     texto = fuente.render("Clic para empezar", True, COLOR_TEXTO)
@@ -156,7 +193,13 @@ def dibujar_pantalla_inicio(pantalla):
     pantalla.blit(texto, rect)
 
 def dibujar_pantalla_fin(pantalla, ganador):
-    """Muestra la pantalla de fin de juego."""
+    """
+    Muestra la pantalla de fin de juego con el nombre del ganador.
+
+    Args:
+        pantalla (pygame.Surface): La superficie de la pantalla donde dibujar.
+        ganador (Player): El jugador que ha ganado la partida.
+    """
     fuente_grande = pygame.font.Font(None, 72)
     fuente_pequeña = pygame.font.Font(None, 36)
 
@@ -176,7 +219,22 @@ def dibujar_pantalla_fin(pantalla, ganador):
 # --- Funciones de Manejo de Eventos ---
 
 def manejar_eventos_jugando(evento, game, board, pico_seleccionado):
-    """Gestiona los eventos durante el estado JUGANDO."""
+    """
+    Gestiona los eventos de entrada del usuario durante el estado de juego.
+
+    Procesa los clics del ratón para seleccionar y mover fichas, reingresar
+    desde la barra y sacar fichas del tablero.
+
+    Args:
+        evento (pygame.event.Event): El evento actual de Pygame.
+        game (Game): La instancia actual del juego.
+        board (Board): El objeto del tablero.
+        pico_seleccionado (int or None): El índice del pico actualmente
+                                         seleccionado.
+
+    Returns:
+        int or None: El nuevo pico seleccionado, o None si no hay selección.
+    """
     if evento.type == pygame.MOUSEBUTTONDOWN:
         if game.jugador_tiene_fichas_en_barra():
             pos_clic = pygame.mouse.get_pos()
@@ -219,7 +277,14 @@ def manejar_eventos_jugando(evento, game, board, pico_seleccionado):
     return pico_seleccionado
 
 def dibujar_info_turno(pantalla, game, mensaje_info):
-    """Muestra información sobre el turno actual y los dados."""
+    """
+    Muestra información sobre el turno actual, como el jugador y los dados.
+
+    Args:
+        pantalla (pygame.Surface): La superficie de la pantalla donde dibujar.
+        game (Game): La instancia actual del juego.
+        mensaje_info (str): Un mensaje de información adicional para mostrar.
+    """
     fuente = pygame.font.Font(None, 36)
     
     # Turno del jugador
