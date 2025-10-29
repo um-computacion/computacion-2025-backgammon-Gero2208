@@ -4,8 +4,19 @@ from core.exceptions import BackgammonException
 
 def procesar_turno(game, entrada_usuario):
     """
-    Procesa un solo movimiento o acción del jugador basado en la entrada.
-    Devuelve True si la acción fue exitosa, False en caso contrario.
+    Procesa la entrada del usuario para un turno de juego.
+
+    Parsea la entrada del usuario para determinar el comando y los argumentos,
+    y luego llama al método de juego apropiado. Maneja los diferentes
+    estados del juego, como tener fichas en la barra o estar en la fase de
+    sacar fichas.
+
+    Args:
+        game (Game): La instancia actual del juego.
+        entrada_usuario (str): La cadena de entrada del usuario.
+
+    Returns:
+        bool: True si la acción fue exitosa, False en caso contrario.
     """
     try:
         partes = entrada_usuario.split()
@@ -53,6 +64,13 @@ def procesar_turno(game, entrada_usuario):
         return False
 
 def main():
+    """
+    Función principal para ejecutar el juego de Backgammon en la línea de comandos.
+
+    Inicializa el juego, gestiona la configuración de los jugadores, decide quién
+    comienza, y luego entra en un bucle principal que procesa los turnos de los
+    jugadores hasta que uno de ellos gana la partida.
+    """
     print("Iniciando Backgammon")
 
     nombre1 = input("Nombre del Jugador 1: ")

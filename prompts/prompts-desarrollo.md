@@ -2064,4 +2064,11 @@ In summary, while the agent correctly implemented the algorithm for the requeste
 
 ## Response
 
+            prompt = "Jugada (ej: mover <origen> <destino>): "
+            if game.jugador_tiene_fichas_en_barra():
+                prompt = "Jugada (ej: reingresar <dado>): "
+            elif game.todas_fichas_en_casa():
+                prompt = "Jugada (ej: mover <origen> <destino> o sacar <origen> <dado>): "
+            
+            entrada = input(prompt)
 
