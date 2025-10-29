@@ -1,9 +1,12 @@
-from .player import Player
-from .board import Board
-from .dice import Dice
-from .checkers import Checkers
-from .exceptions import MovimientoInvalido, DadoInvalido, OrigenInvalido
+"""
+Este módulo contiene la clase Game, que orquesta una partida de Backgammon.
+"""
 import random
+from .board import Board
+from .checkers import Checkers
+from .dice import Dice
+from .exceptions import MovimientoInvalido, DadoInvalido, OrigenInvalido
+
 
 class Game:
     """
@@ -60,7 +63,7 @@ class Game:
             if tiro_p1 > tiro_p2:
                 self.__turno__ = 0
                 return self.__p1__, tiro_p1, tiro_p2
-            elif tiro_p2 > tiro_p1:
+            if tiro_p2 > tiro_p1:
                 self.__turno__ = 1
                 return self.__p2__, tiro_p1, tiro_p2
 
@@ -108,7 +111,11 @@ class Game:
             MovimientoInvalido: Si el movimiento no es válido.
         """
         self.movimientos_restantes = Checkers.mover_y_consumir(
-            self.__board__, self.jugador_actual(), origen, destino, self.movimientos_restantes
+            self.__board__,
+            self.jugador_actual(),
+            origen,
+            destino,
+            self.movimientos_restantes
         )
 
     def get_board_status(self):
@@ -128,11 +135,15 @@ class Game:
             bool: True si hay al menos un movimiento posible, False en caso contrario.
         """
         if self.jugador_tiene_fichas_en_barra():
-             for dado in self.movimientos_restantes:
-                 if Checkers.puede_reingresar(self.__board__, self.jugador_actual(), dado) is not None:
-                     return True
-             return False
-        return Checkers.hay_movimientos_posibles(self.__board__, self.jugador_actual(), self.movimientos_restantes)
+            for dado in self.movimientos_restantes:
+                if Checkers.puede_reingresar(
+                    self.__board__, self.jugador_actual(), dado
+                ) is not None:
+                    return True
+            return False
+        return Checkers.hay_movimientos_posibles(
+            self.__board__, self.jugador_actual(), self.movimientos_restantes
+        )
 
     def jugador_tiene_fichas_en_barra(self):
         """

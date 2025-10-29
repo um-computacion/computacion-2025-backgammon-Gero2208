@@ -1,6 +1,11 @@
+"""
+Este módulo implementa una interfaz de línea de comandos (CLI) para jugar
+al Backgammon.
+"""
 from core.player import Player
 from core.game import Game
 from core.exceptions import BackgammonException
+
 
 def procesar_turno(game, entrada_usuario):
     """
@@ -63,6 +68,7 @@ def procesar_turno(game, entrada_usuario):
         print(f"Error: {e}")
         return False
 
+
 def main():
     """
     Función principal para ejecutar el juego de Backgammon en la línea de comandos.
@@ -78,7 +84,7 @@ def main():
     while color1 not in ("blanco", "negro"):
         print("Color inválido. Debe ser 'Blanco' o 'Negro'")
         color1 = input("Color del Jugador 1 (Blanco/Negro): ").lower()
-    
+
     nombre2 = input("Nombre del Jugador 2: ")
     color2 = "blanco" if color1 == "negro" else "negro"
 
@@ -95,7 +101,7 @@ def main():
         print(f"Turno de: {jugador_actual.nombre()} ({jugador_actual.color()})")
 
         game.lanzar_dados()
-        
+
         board = game.get_board_status()
         board.mostrar_tablero_cli()
         print(f"Dados restantes: {game.movimientos_restantes}")
@@ -104,14 +110,14 @@ def main():
             if not game.hay_movimientos_posibles():
                 print("No tienes movimientos posibles con los dados restantes.")
                 break
-            
+
             # Generar texto de ayuda dinámico
             prompt = "Jugada (ej: mover <origen> <destino>): "
             if game.jugador_tiene_fichas_en_barra():
                 prompt = "Jugada (ej: reingresar <dado>): "
             elif game.todas_fichas_en_casa():
                 prompt = "Jugada (ej: mover <origen> <destino> o sacar <origen> <dado>): "
-            
+
             entrada = input(prompt)
             procesar_turno(game, entrada)
 
@@ -124,8 +130,9 @@ def main():
             print(f"¡Felicidades, {ganador_actual.nombre()}! Has ganado la partida.")
             board.mostrar_tablero_cli()
             break
-        
+
         game.cambiar_turno()
+
 
 if __name__ == '__main__':
     main()

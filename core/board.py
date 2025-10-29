@@ -1,3 +1,8 @@
+"""
+Este módulo contiene la clase Board, que representa el tablero de Backgammon.
+"""
+
+
 class Board:
     """
     Representa el tablero de juego de Backgammon.
@@ -16,6 +21,7 @@ class Board:
                                           fichas que han sido sacadas del
                                           tablero para cada color.
     """
+
     def __init__(self):
         """
         Inicializa un tablero de Backgammon vacío.
@@ -23,7 +29,7 @@ class Board:
         self.__points__ = [[] for _ in range(24)]
         self.__bar__ = {"blanco": [], "negro": []}
         self.__final__ = {"blanco": [], "negro": []}
-    
+
     def get_bar(self):
         """
         Devuelve el estado de la barra.
@@ -99,6 +105,10 @@ class Board:
             simbolos = {"blanco": "●", "negro": "○"}
         VACIO = " "
 
+        if simbolos is None:
+            simbolos = {"blanco": "●", "negro": "○"}
+        vacio = " "
+
         def celda(txt):
             return f"{txt:^{ancho_col}}"
 
@@ -109,36 +119,26 @@ class Board:
             Si hay más de alto_col fichas, se muestran (alto_col-1) y un '×N'.
             """
             if not pila:
-                return [celda(VACIO)] * alto_col
+                return [celda(vacio)] * alto_col
 
             color = pila[0]
-            ficha = simbolos.get(color, VACIO)
+            ficha = simbolos.get(color, vacio)
             n = len(pila)
 
             if n <= alto_col:
                 fichas = [celda(ficha)] * n
-                vacios = [celda(VACIO)] * (alto_col - n)
-                if orientacion == "top":
-                    # Pegadas arriba
-                    return fichas + vacios
-                else:
-                    # Pegadas abajo
-                    return vacios + fichas
-            else:
-                # (alto_col-1) fichas + contador
-                visibles = alto_col - 1
-                contador = celda(f"×{n}")
-                fichas = [celda(ficha)] * visibles
-                if orientacion == "top":
-                    return fichas + [contador]
-                else:
-                    return [contador] + fichas
+                vacios = [celda(vacio)] * (alto_col - n)
+                return fichas + vacios if orientacion == "top" else vacios + fichas
+            # (alto_col-1) fichas + contador
+            visibles = alto_col - 1
+            contador = celda(f"×{n}")
+            fichas = [celda(ficha)] * visibles
+            return fichas + [contador] if orientacion == "top" else [contador] + fichas
 
         # --- Construcción de columnas visibles ---
-        # Top visual: índices internos 12..23 (que el usuario ve como 13..24 izquierda->derecha)
         columnas_sup = [columna_para_pila(self.__points__[i], "top") for i in range(12, 24)]
-        # Bottom visual: índices internos 11..0 (que el usuario ve como 12..1 izquierda->derecha)
-        columnas_inf = [columna_para_pila(self.__points__[i], "bottom") for i in range(11, -1, -1)]
+        columnas_inf = [columna_para_pila(self.__points__[i], "bottom")
+                        for i in range(11, -1, -1)]
 
         # --- Helpers de impresión ---
         def separador():
@@ -156,12 +156,8 @@ class Board:
             return "".join(partes)
 
         # --- Encabezados (números de puntos) ---
-        cab_sup = []
-        for p in range(13, 25):  # 13..24
-            cab_sup.append(celda(str(p if p >= 10 else f" {p}")))
-        cab_inf = []
-        for p in range(12, 0, -1):  # 12..1
-            cab_inf.append(celda(str(p if p >= 10 else f" {p}")))
+        cab_sup = [celda(str(p if p >= 10 else f" {p}")) for p in range(13, 25)]
+        cab_inf = [celda(str(p if p >= 10 else f" {p}")) for p in range(12, 0, -1)]
 
         # --- Impresión ---
         print()
@@ -173,16 +169,14 @@ class Board:
             fila_sup = [col[fila] for col in columnas_sup]
             print(linea_con_divisiones(fila_sup))
 
-        # Triángulos superiores
+        # Triángulos
         triangles_up = [celda("▲")] * 12
         print(linea_con_divisiones(triangles_up))
         print(separador())
-
-        # Triángulos inferiores
         triangles_down = [celda("▼")] * 12
         print(linea_con_divisiones(triangles_down))
 
-        # Fila inferior: se imprime de abajo (índice 0) hacia arriba (índice alto)
+        # Fila inferior
         for fila in range(alto_col - 1, -1, -1):
             fila_inf = [col[fila] for col in columnas_inf]
             print(linea_con_divisiones(fila_inf))
@@ -195,4 +189,5 @@ class Board:
         bar_negro = len(self.__bar__.get("negro", []))
         off_blanco = len(self.__final__.get("blanco", []))
         off_negro = len(self.__final__.get("negro", []))
-        print(f"\nBarra: Blanco={bar_blanco}  Negro={bar_negro}   |   Final: Blanco={off_blanco}  Negro={off_negro}")
+        print(f"\nBarra: Blanco={bar_blanco} Negro={bar_negro} | "
+              f"Final: Blanco={off_blanco} Negro={off_negro}")
