@@ -1,9 +1,19 @@
+"""
+Este módulo contiene las pruebas unitarias para la clase Board.
+"""
 import unittest
 from core.board import Board
 
+
 class TestBoard(unittest.TestCase):
+    """
+    Pruebas para la clase Board.
+    """
 
     def test_board_initialization(self):
+        """
+        Prueba que el tablero se inicializa correctamente.
+        """
         board = Board()
         self.assertEqual(len(board.get_points()), 24)
         self.assertTrue(all(p == [] for p in board.get_points()))
@@ -11,6 +21,9 @@ class TestBoard(unittest.TestCase):
         self.assertEqual(board.get_final(), {"blanco": [], "negro": []})
 
     def test_board_setup(self):
+        """
+        Prueba que el tablero se configura correctamente con la disposición inicial.
+        """
         board = Board()
         board.setup("blanco", "negro")
 
@@ -32,6 +45,9 @@ class TestBoard(unittest.TestCase):
             self.assertFalse(board.get_points()[p])
 
     def test_increment_final(self):
+        """
+        Prueba que se pueden añadir fichas a la zona final correctamente.
+        """
         board = Board()
         board.increment_final("blanco")
         self.assertEqual(board.get_final()["blanco"], ["blanco"])
@@ -39,6 +55,7 @@ class TestBoard(unittest.TestCase):
         self.assertEqual(board.get_final()["blanco"], ["blanco", "blanco"])
         board.increment_final("negro")
         self.assertEqual(board.get_final()["negro"], ["negro"])
+
 
 if __name__ == '__main__':
     unittest.main()

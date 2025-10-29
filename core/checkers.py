@@ -1,4 +1,9 @@
+"""
+Este módulo contiene la clase Checkers, que implementa la lógica estática
+para validar y ejecutar movimientos de fichas en el juego de backgammon.
+"""
 from .exceptions import MovimientoInvalido
+
 
 class Checkers:
     """
@@ -32,8 +37,10 @@ class Checkers:
             color_destino = puntos[destino][0]
             cantidad = len(puntos[destino])
             if color_destino != color and cantidad > 1:
-                raise MovimientoInvalido("No puedes mover a una casilla ocupada por 2 o más fichas rivales.")
-            
+                raise MovimientoInvalido(
+                    "No puedes mover a una casilla ocupada por 2 o más fichas rivales."
+                )
+
     @staticmethod
     def mover(board, jugador, origen, destino, dado):
         """
@@ -49,12 +56,12 @@ class Checkers:
         Checkers.es_movimiento_valido(board, jugador, origen, destino, dado)
         color = jugador.color()
         puntos = board.get_points()
-        bar = board.get_bar()
+        barra = board.get_bar()
 
         # captura: si en destino hay 1 ficha y es rival -> enviarla a la barra
         if puntos[destino] and puntos[destino][0] != color and len(puntos[destino]) == 1:
             enemigo_color = puntos[destino].pop()
-            bar[enemigo_color].append(enemigo_color)
+            barra[enemigo_color].append(enemigo_color)
 
         # mover la ficha desde origen a destino
         puntos[origen].pop()
@@ -63,7 +70,8 @@ class Checkers:
     @staticmethod
     def destinos_posibles(board, jugador, origen, dados):
         """
-        Calcula los destinos posibles para una ficha desde un punto de origen con los dados disponibles.
+        Calcula los destinos posibles para una ficha desde un punto de origen
+        con los dados disponibles.
 
         Args:
             board (Board): El tablero de juego.
@@ -74,21 +82,21 @@ class Checkers:
         Returns:
             list[int]: Una lista de los puntos de destino posibles.
         """
-        color = jugador.color()
         direccion = jugador.direccion()
-        puntos = board.get_points()
         destinos = []
         for dado in dados:
             destino = origen + direccion * dado
             if 0 <= destino <= 23:
                 try:
-                    Checkers.es_movimiento_valido(board, jugador, origen, destino, dado)
+                    Checkers.es_movimiento_valido(
+                        board, jugador, origen, destino, dado
+                    )
                     if destino not in destinos:
                         destinos.append(destino)
                 except MovimientoInvalido:
                     continue
         return destinos
-    
+
     @staticmethod
     def dado_para_movimiento(jugador, origen, destino, dados):
         """
@@ -154,7 +162,7 @@ class Checkers:
             if puntos[i] and puntos[i][0] == color:
                 if Checkers.destinos_posibles(board, jugador, i, dados):
                     return True
-        
+
         # 2. Si no hay movimientos normales, comprobar si se puede hacer "bear off"
         if Checkers.todas_en_inicio(board, jugador):
             # Iterar sobre las fichas en la casa del jugador
@@ -180,11 +188,9 @@ class Checkers:
         Returns:
             int: El punto de destino para el reingreso.
         """
-        direccion = jugador.direccion()
-        if direccion == 1:
-            return dado - 1        # dados 1..6 -> índices 0..5
-        else:
-            return 24 - dado       # dados 1..6 -> índices 23..18
+        if jugador.direccion() == 1:
+            return dado - 1  # dados 1..6 -> índices 0..5
+        return 24 - dado  # dados 1..6 -> índices 23..18
 
     @staticmethod
     def puede_reingresar(board, jugador, dado):
@@ -200,13 +206,19 @@ class Checkers:
             int or None: El índice de destino si es posible, o None si no.
         """
         destino = Checkers.destino_entrada_por_dado(jugador, dado)
-        if destino < 0 or destino > 23:
+        if not 0 <= destino <= 23:
             return None
+
         puntos = board.get_points()
         color = jugador.color()
-        if not puntos[destino]: return destino
-        if puntos[destino][0] == color: return destino
-        if len(puntos[destino]) == 1: return destino
+
+        if not puntos[destino]:
+            return destino
+        if puntos[destino][0] == color:
+            return destino
+        if len(puntos[destino]) == 1:
+            return destino
+
         return None
 
     @staticmethod
@@ -225,13 +237,15 @@ class Checkers:
         destino = Checkers.puede_reingresar(board, jugador, dado)
         if destino is None:
             raise MovimientoInvalido("No puedes reingresar con ese dado.")
+
         color = jugador.color()
-        bar = board.get_bar()
+        barra = board.get_bar()
         puntos = board.get_points()
-        bar[color].pop()
+
+        barra[color].pop()
         if puntos[destino] and puntos[destino][0] != color:
             enemigo_color = puntos[destino].pop()
-            bar[enemigo_color].append(enemigo_color)
+            barra[enemigo_color].append(enemigo_color)
         puntos[destino].append(color)
 
     @staticmethod
@@ -247,15 +261,18 @@ class Checkers:
             bool: True si todas las fichas están en casa, False en caso contrario.
         """
         color = jugador.color()
-        direccion = jugador.direccion()
-        if board.get_bar().get(color): return False
+        if board.get_bar().get(color):
+            return False
+
         puntos = board.get_points()
-        if direccion == 1:
-            for i in range(0, 18):
-                if puntos[i] and puntos[i][0] == color: return False
+        if jugador.direccion() == 1:
+            for i in range(18):
+                if puntos[i] and puntos[i][0] == color:
+                    return False
         else:
             for i in range(6, 24):
-                if puntos[i] and puntos[i][0] == color: return False
+                if puntos[i] and puntos[i][0] == color:
+                    return False
         return True
 
     @staticmethod
@@ -275,10 +292,12 @@ class Checkers:
         puntos = board.get_points()
         if jugador.direccion() == 1:
             for i in range(18, origen):
-                if puntos[i] and puntos[i][0] == color: return True
+                if puntos[i] and puntos[i][0] == color:
+                    return True
         else:
             for i in range(origen + 1, 6):
-                if puntos[i] and puntos[i][0] == color: return True
+                if puntos[i] and puntos[i][0] == color:
+                    return True
         return False
 
     @staticmethod
@@ -297,39 +316,52 @@ class Checkers:
         """
         try:
             # Replicar la lógica de validación de bear_off sin modificar el tablero
-            if not Checkers.todas_en_inicio(board, jugador): return False
+            if not Checkers.todas_en_inicio(board, jugador):
+                return False
             color = jugador.color()
             puntos = board.get_points()
             direccion = jugador.direccion()
             punto_exacto = (24 - dado) if direccion == 1 else (dado - 1)
 
             if 0 <= punto_exacto < 24 and puntos[punto_exacto] and puntos[punto_exacto][0] == color:
-                if origen != punto_exacto: return False
+                if origen != punto_exacto:
+                    return False
             else:
                 hay_fichas_superiores = False
                 if direccion == 1:
                     for i in range(18, punto_exacto):
-                        if puntos[i] and puntos[i][0] == color: hay_fichas_superiores = True; break
+                        if puntos[i] and puntos[i][0] == color:
+                            hay_fichas_superiores = True
+                            break
                 else:
                     for i in range(punto_exacto + 1, 6):
-                        if puntos[i] and puntos[i][0] == color: hay_fichas_superiores = True; break
-                if hay_fichas_superiores: return False
+                        if puntos[i] and puntos[i][0] == color:
+                            hay_fichas_superiores = True
+                            break
+                if hay_fichas_superiores:
+                    return False
 
                 punto_mas_alto = -1
                 if direccion == 1:
                     for i in range(23, 17, -1):
-                        if puntos[i] and puntos[i][0] == color: punto_mas_alto = i; break
+                        if puntos[i] and puntos[i][0] == color:
+                            punto_mas_alto = i
+                            break
                 else:
                     for i in range(5, -1, -1):
-                        if puntos[i] and puntos[i][0] == color: punto_mas_alto = i; break
-                
-                if punto_mas_alto == -1: return False
+                        if puntos[i] and puntos[i][0] == color:
+                            punto_mas_alto = i
+                            break
+
+                if punto_mas_alto == -1:
+                    return False
                 distancia_mas_alta = (24 - punto_mas_alto) if direccion == 1 else (punto_mas_alto + 1)
-                if dado < distancia_mas_alta or origen != punto_mas_alto: return False
+                if dado < distancia_mas_alta or origen != punto_mas_alto:
+                    return False
             return True
-        except:
+        except (ValueError, IndexError):
             return False
-        
+
     @staticmethod
     def bear_off(board, jugador, origen: int, dado: int):
         """
@@ -352,61 +384,60 @@ class Checkers:
         direccion = jugador.direccion()
 
         # Calcular el punto exacto que corresponde al dado
-        punto_exacto = -1
-        if direccion == 1:
-            punto_exacto = 24 - dado
-        else:
-            punto_exacto = dado - 1
+        punto_exacto = (24 - dado) if direccion == 1 else (dado - 1)
 
         # Caso 1: El punto exacto está ocupado
         if 0 <= punto_exacto < 24 and puntos[punto_exacto] and puntos[punto_exacto][0] == color:
             if origen != punto_exacto:
-                raise MovimientoInvalido(f"Debes sacar la ficha desde el punto {punto_exacto + 1}.")
+                raise MovimientoInvalido(
+                    f"Debes sacar la ficha desde el punto {punto_exacto + 1}."
+                )
             puntos[origen].pop()
             board.increment_final(color)
             return
 
         # Si el punto exacto está libre, comprobar si hay fichas en puntos superiores
         hay_fichas_superiores = False
-        if direccion == 1: # Casa en 18-23
+        if direccion == 1:  # Casa en 18-23
             for i in range(18, punto_exacto):
                 if puntos[i] and puntos[i][0] == color:
                     hay_fichas_superiores = True
                     break
-        else: # Casa en 0-5
+        else:  # Casa en 0-5
             for i in range(punto_exacto + 1, 6):
                 if puntos[i] and puntos[i][0] == color:
                     hay_fichas_superiores = True
                     break
-        
+
         if hay_fichas_superiores:
-             raise MovimientoInvalido("No puedes sacar fichas si tienes otras en puntos más altos.")
+            raise MovimientoInvalido(
+                "No puedes sacar fichas si tienes otras en puntos más altos."
+            )
 
         # Caso 2: El punto exacto está vacío y no hay fichas en puntos superiores
-        else:
-            # Buscar el punto más alto ocupado
-            punto_mas_alto = -1
-            if direccion == 1: # Casa en 18-23, el más alto es el de mayor índice
-                for i in range(23, 17, -1):
-                    if puntos[i] and puntos[i][0] == color:
-                        punto_mas_alto = i
-                        break
-            else: # Casa en 0-5, el más alto es el de mayor índice
-                for i in range(5, -1, -1):
-                    if puntos[i] and puntos[i][0] == color:
-                        punto_mas_alto = i
-                        break
-            
-            if punto_mas_alto == -1:
-                raise MovimientoInvalido("No tienes fichas para sacar.")
+        # Buscar el punto más alto ocupado
+        punto_mas_alto = -1
+        if direccion == 1:  # Casa en 18-23, el más alto es el de mayor índice
+            for i in range(23, 17, -1):
+                if puntos[i] and puntos[i][0] == color:
+                    punto_mas_alto = i
+                    break
+        else:  # Casa en 0-5, el más alto es el de menor índice
+            for i in range(5, -1, -1):
+                if puntos[i] and puntos[i][0] == color:
+                    punto_mas_alto = i
+                    break
+        if punto_mas_alto == -1:
+            raise MovimientoInvalido("No tienes fichas para sacar.")
 
-            # El dado debe ser mayor o igual a la distancia del punto más alto
-            distancia_mas_alta = (24 - punto_mas_alto) if direccion == 1 else (punto_mas_alto + 1)
-            
-            if dado >= distancia_mas_alta:
-                if origen != punto_mas_alto:
-                     raise MovimientoInvalido(f"Debes sacar la ficha desde tu punto más alto: {punto_mas_alto + 1}.")
-                puntos[origen].pop()
-                board.increment_final(color)
-            else:
-                raise MovimientoInvalido("No puedes usar ese dado para sacar una ficha.")
+        # El dado debe ser mayor o igual a la distancia del punto más alto
+        distancia_mas_alta = (24 - punto_mas_alto) if direccion == 1 else (punto_mas_alto + 1)
+        if dado >= distancia_mas_alta:
+            if origen != punto_mas_alto:
+                raise MovimientoInvalido(
+                    f"Debes sacar la ficha desde tu punto más alto: {punto_mas_alto + 1}."
+                )
+            puntos[origen].pop()
+            board.increment_final(color)
+        else:
+            raise MovimientoInvalido("No puedes usar ese dado para sacar una ficha.")

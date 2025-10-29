@@ -1,3 +1,8 @@
+"""
+Este módulo contiene la clase Player, que representa a un jugador.
+"""
+
+
 class Player:
     """
     Representa a un jugador en el juego de Backgammon.
@@ -32,7 +37,7 @@ class Player:
             str: El nombre del jugador.
         """
         return self.__nombre__
-    
+
     def color(self):
         """
         Devuelve el color de las fichas del jugador.
@@ -41,7 +46,7 @@ class Player:
             str: El color del jugador ('blanco' o 'negro').
         """
         return self.__color__
-    
+
     def direccion(self):
         """
         Devuelve la dirección de movimiento del jugador en el tablero.

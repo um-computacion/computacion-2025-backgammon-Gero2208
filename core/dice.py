@@ -1,4 +1,8 @@
+"""
+Este módulo contiene la clase Dice, que representa los dados del juego.
+"""
 import random
+
 
 class Dice:
     """
@@ -28,7 +32,7 @@ class Dice:
         """
         self.__valor__ = [random.randint(1, 6), random.randint(1, 6)]
         return self.__valor__
-    
+
     def dobles(self):
         """
         Comprueba si los dos dados tienen el mismo valor.
@@ -37,7 +41,7 @@ class Dice:
             bool: True si los valores de los dados son iguales, False en caso contrario.
         """
         return self.__valor__[0] == self.__valor__[1]
-    
+
     def duplicar(self):
         """
         Devuelve los valores de los dados, duplicados si son dobles.
@@ -49,10 +53,9 @@ class Dice:
             list[int]: Una lista de 4 elementos si son dobles, o 2 en caso contrario.
         """
         if self.dobles():
-            return [self.__valor__[0]] * 4 
-        else:
-            return self.__valor__
-    
+            return [self.__valor__[0]] * 4
+        return self.__valor__
+
     def set_valor(self, valor):
         """
         Establece el valor de los dados con fines de prueba.
