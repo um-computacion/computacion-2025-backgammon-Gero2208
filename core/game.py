@@ -1,7 +1,6 @@
 """
 Este módulo contiene la clase Game, que orquesta una partida de Backgammon.
 """
-import random
 from .board import Board
 from .checkers import Checkers
 from .dice import Dice
@@ -58,8 +57,8 @@ class Game:
                                      jugador 2.
         """
         while True:
-            tiro_p1 = random.randint(1, 6)
-            tiro_p2 = random.randint(1, 6)
+            tiro_p1 = self.__dice__.roll_one()
+            tiro_p2 = self.__dice__.roll_one()
             if tiro_p1 > tiro_p2:
                 self.__turno__ = 0
                 return self.__p1__, tiro_p1, tiro_p2

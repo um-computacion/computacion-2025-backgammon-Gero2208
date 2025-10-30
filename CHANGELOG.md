@@ -9,6 +9,12 @@ y este proyecto sigue [Semantic Versioning](https://semver.org/lang/es/).
 
 ### Added
 
+- Implementación de tests unitarios para todas las clases y CLI para llegar a un Cover de 96%
+
+## [0.6.1] 29-10-2025
+
+### Added
+
 - Corrección de bear_off que no funcionaba correctamente la regla de "Sacar una ficha de un punto más alto (el caso especial)"
 
 ## [0.6.0] 28-10-2025

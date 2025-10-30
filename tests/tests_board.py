@@ -56,6 +56,37 @@ class TestBoard(unittest.TestCase):
         board.increment_final("negro")
         self.assertEqual(board.get_final()["negro"], ["negro"])
 
+    def test_mostrar_tablero_cli_empty(self):
+        """
+        Prueba que la salida de un tablero vacío es correcta.
+        """
+        board = Board()
+        output = board.mostrar_tablero_cli()
+        self.assertIn("Barra: Blanco=0 Negro=0 | Final: Blanco=0 Negro=0", output)
+        self.assertIn("   13 14 15 16 17 18  19 20 21 22 23 24", output)
+        self.assertIn("   12 11 10  9  8  7   6  5  4  3  2  1", output)
+
+    def test_mostrar_tablero_cli_setup(self):
+        """
+        Prueba que la salida de un tablero recién configurado es correcta.
+        """
+        board = Board()
+        board.setup("blanco", "negro")
+        output = board.mostrar_tablero_cli()
+        self.assertIn("Barra: Blanco=0 Negro=0 | Final: Blanco=0 Negro=0", output)
+        # Verificamos la presencia de algunos contadores de fichas
+        self.assertIn("○", output)
+        self.assertIn("●", output)
+
+    def test_mostrar_tablero_cli_full_column(self):
+        """
+        Prueba que una columna con más de 5 fichas muestra el contador 'xN'.
+        """
+        board = Board()
+        board.get_points()[0] = ["blanco"] * 6
+        output = board.mostrar_tablero_cli()
+        self.assertIn("×6", output)
+
 
 if __name__ == '__main__':
     unittest.main()

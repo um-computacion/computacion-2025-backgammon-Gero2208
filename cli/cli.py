@@ -103,7 +103,7 @@ def main():
         game.lanzar_dados()
 
         board = game.get_board_status()
-        board.mostrar_tablero_cli()
+        print(board.mostrar_tablero_cli())
         print(f"Dados restantes: {game.movimientos_restantes}")
 
         while game.movimientos_restantes:
@@ -122,13 +122,13 @@ def main():
             procesar_turno(game, entrada)
 
             if game.movimientos_restantes:
-                board.mostrar_tablero_cli()
+                print(board.mostrar_tablero_cli())
                 print(f"Dados restantes: {game.movimientos_restantes}")
 
         ganador_actual = game.ganador()
         if ganador_actual:
             print(f"¡Felicidades, {ganador_actual.nombre()}! Has ganado la partida.")
-            board.mostrar_tablero_cli()
+            print(board.mostrar_tablero_cli())
             break
 
         game.cambiar_turno()

@@ -92,19 +92,17 @@ class Board:
 
     def mostrar_tablero_cli(self, alto_col=5, ancho_col=3, simbolos=None):
         """
-        Muestra una representación del tablero en la consola.
+        Devuelve una cadena de texto con la representación del tablero.
 
         Args:
             alto_col (int): La altura máxima de las columnas de fichas.
             ancho_col (int): El ancho de cada columna.
             simbolos (dict, optional): Un diccionario para personalizar los
                                        símbolos de las fichas.
+        Returns:
+            str: Una cadena de texto con la representación del tablero.
         """
         # --- Config ---
-        if simbolos is None:
-            simbolos = {"blanco": "●", "negro": "○"}
-        VACIO = " "
-
         if simbolos is None:
             simbolos = {"blanco": "●", "negro": "○"}
         vacio = " "
@@ -159,35 +157,38 @@ class Board:
         cab_sup = [celda(str(p if p >= 10 else f" {p}")) for p in range(13, 25)]
         cab_inf = [celda(str(p if p >= 10 else f" {p}")) for p in range(12, 0, -1)]
 
-        # --- Impresión ---
-        print()
-        print("   " + "".join(cab_sup[:6]) + " " + "".join(cab_sup[6:]))
-        print(separador())
+        # --- Construcción de la salida ---
+        lines = []
+        lines.append("")
+        lines.append("   " + "".join(cab_sup[:6]) + " " + "".join(cab_sup[6:]))
+        lines.append(separador())
 
         # Fila superior: se imprime de arriba (índice alto) hacia abajo (índice 0)
         for fila in range(alto_col - 1, -1, -1):
             fila_sup = [col[fila] for col in columnas_sup]
-            print(linea_con_divisiones(fila_sup))
+            lines.append(linea_con_divisiones(fila_sup))
 
         # Triángulos
         triangles_up = [celda("▲")] * 12
-        print(linea_con_divisiones(triangles_up))
-        print(separador())
+        lines.append(linea_con_divisiones(triangles_up))
+        lines.append(separador())
         triangles_down = [celda("▼")] * 12
-        print(linea_con_divisiones(triangles_down))
+        lines.append(linea_con_divisiones(triangles_down))
 
         # Fila inferior
         for fila in range(alto_col - 1, -1, -1):
             fila_inf = [col[fila] for col in columnas_inf]
-            print(linea_con_divisiones(fila_inf))
+            lines.append(linea_con_divisiones(fila_inf))
 
-        print(separador())
-        print("   " + "".join(cab_inf[:6]) + " " + "".join(cab_inf[6:]))
+        lines.append(separador())
+        lines.append("   " + "".join(cab_inf[:6]) + " " + "".join(cab_inf[6:]))
 
         # --- Barra y fuera ---
         bar_blanco = len(self.__bar__.get("blanco", []))
         bar_negro = len(self.__bar__.get("negro", []))
         off_blanco = len(self.__final__.get("blanco", []))
         off_negro = len(self.__final__.get("negro", []))
-        print(f"\nBarra: Blanco={bar_blanco} Negro={bar_negro} | "
-              f"Final: Blanco={off_blanco} Negro={off_negro}")
+        lines.append(f"\nBarra: Blanco={bar_blanco} Negro={bar_negro} | "
+                     f"Final: Blanco={off_blanco} Negro={off_negro}")
+
+        return "\n".join(lines)

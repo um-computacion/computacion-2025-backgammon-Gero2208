@@ -1220,10 +1220,6 @@ def main():
         
         game.cambiar_turno()
 
-if __name__ == '__main__':
-    main()
-
-
 ## Prompt (Se utilizó Jules)
 
 ### Haz docstring para el ui de pygame
@@ -1234,11 +1230,11 @@ import pygame
 from core.game import Game
 from core.player import Player
 
-# --- Constantes ---
+ --- Constantes ---
 ANCHO_VENTANA = 800
 ALTO_VENTANA = 600
 
-# --- Colores ---
+ --- Colores ---
 COLOR_FONDO = (210, 180, 140)  # Un color madera claro
 COLOR_PICO_1 = (139, 69, 19)   # Marrón oscuro
 COLOR_PICO_2 = (245, 245, 220)  # Beige
@@ -1247,14 +1243,14 @@ COLOR_FICHA_BLANCA = (255, 255, 255)
 COLOR_FICHA_NEGRA = (0, 0, 0)
 COLOR_TEXTO = (20, 20, 20)
 
-# --- Dimensiones del tablero ---
+ --- Dimensiones del tablero ---
 MARGEN = 20
 ANCHO_PICO = (ANCHO_VENTANA - 2 * MARGEN) // 13  # 12 picos + 1 para la barra
 ALTO_PICO = ALTO_VENTANA // 2 - MARGEN
 ANCHO_BARRA = ANCHO_PICO
 
 
-# --- Funciones de Dibujado ---
+ --- Funciones de Dibujado ---
 
 def dibujar_tablero(pantalla):
     """
@@ -1448,7 +1444,7 @@ def dibujar_pantalla_fin(pantalla, ganador):
     pantalla.blit(sup_continuar, rect_continuar)
 
 
-# --- Funciones de Manejo de Eventos ---
+ --- Funciones de Manejo de Eventos ---
 
 def manejar_eventos_jugando(evento, game, board, pico_seleccionado):
     """
@@ -1616,7 +1612,3 @@ def main():
         pygame.display.flip()
 
     pygame.quit()
-
-if __name__ == '__main__':
-    main()
-
