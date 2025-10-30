@@ -2061,3 +2061,25 @@ In summary, while the agent correctly implemented the algorithm for the requeste
                 prompt = "Jugada (ej: mover <origen> <destino> o sacar <origen> <dado>): "
             
             entrada = input(prompt)
+
+## Prompt (Se utilizó GPT-5)
+
+### Implementa que al principio se puedan ingresar dos nombres y en vez de representarte con colores se representen con nombres y el color al lado entre (). Tambien arregla los tamaños de los triangulos, hazlo mas lindo y estetico y realista como un tablero de backgammon real y encuadra mejor las fichas. Cuando en una casilla se sobrepase de 5 fichas, pon un número en algun lado cerca que te diga cuantas fichas hay ya que cuando sobrepasa de 5 las fichas comienzan a irse hacia arriba o abajo y salen del rango del triangulo.
+
+### El tablero no ocupa toda la pantalla, ademas las fichas no estan centradas en cada casilla. Mejora graficamente este codigo
+
+### Se hace un prompt sobre un error de consola para que lo arregle
+
+### Ahora quita los numeros en las casillas e implementa que al seleccionar una casilla en la cual puedes mover, se resalen las casillas a las que puedes mover con tus dados actuales
+
+### Implementa el bear off, debe haber un boton para quitar las fichas de la casilla que quiera que salgan. Todo esto debe implementarse exactamente con las funciones de Checkers para el bear_off
+
+### Al hacer click derecho mientras estoy seleccionando una ficha se cierra el juego, a que se puede deber esto?
+
+### Haz que sacar fichas solo se pueda hacer mediante el botón y no haciendo doble click en la misma casilla
+
+### Quita la pantalla de hacer click para iniciar y que directamente inicie la partida
+
+## Response
+
+Todas estos prompts se han añadido al ui de Pygame.
