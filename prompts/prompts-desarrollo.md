@@ -985,11 +985,11 @@ import pygame
 from core.game import Game
 from core.player import Player
 
-# --- Constantes ---
+ --- Constantes ---
 ANCHO_VENTANA = 800
 ALTO_VENTANA = 600
 
-# --- Colores ---
+ --- Colores ---
 COLOR_FONDO = (210, 180, 140)  # Un color madera claro
 COLOR_PICO_1 = (139, 69, 19)   # Marrón oscuro
 COLOR_PICO_2 = (245, 245, 220)  # Beige
@@ -998,7 +998,7 @@ COLOR_FICHA_BLANCA = (255, 255, 255)
 COLOR_FICHA_NEGRA = (0, 0, 0)
 COLOR_TEXTO = (20, 20, 20)
 
-# --- Dimensiones del tablero ---
+ --- Dimensiones del tablero ---
 MARGEN = 20
 ANCHO_PICO = (ANCHO_VENTANA - 2 * MARGEN) // 13  # 12 picos + 1 para la barra
 ALTO_PICO = ALTO_VENTANA // 2 - MARGEN
@@ -1321,9 +1321,6 @@ def main():
 
     pygame.quit()
 
-if __name__ == '__main__':
-    main()
-
 ## Prompt (Se utilizó Jules)
 
 ### Intenta simplificar el código lo mas que puedas para que sea bien legible. Ademas, haz que al entrar solo debas clickear una vez y ya salga el tablero con el turno del jugador que ya gano la primer tirada y los dados que tiene para usar. También haz uso de la clase Player para poder escribir nombres antes de empezar la partida
@@ -1334,11 +1331,11 @@ import pygame
 from core.game import Game
 from core.player import Player
 
-# --- Constantes ---
+ --- Constantes ---
 ANCHO_VENTANA = 800
 ALTO_VENTANA = 600
 
-# --- Colores ---
+ --- Colores ---
 COLOR_FONDO = (210, 180, 140)  # Un color madera claro
 COLOR_PICO_1 = (139, 69, 19)   # Marrón oscuro
 COLOR_PICO_2 = (245, 245, 220)  # Beige
@@ -1347,14 +1344,14 @@ COLOR_FICHA_BLANCA = (255, 255, 255)
 COLOR_FICHA_NEGRA = (0, 0, 0)
 COLOR_TEXTO = (20, 20, 20)
 
-# --- Dimensiones del tablero ---
+ --- Dimensiones del tablero ---
 MARGEN = 20
 ANCHO_PICO = (ANCHO_VENTANA - 2 * MARGEN) // 13  # 12 picos + 1 para la barra
 ALTO_PICO = ALTO_VENTANA // 2 - MARGEN
 ANCHO_BARRA = ANCHO_PICO
 
 
-# --- Funciones de Dibujado ---
+ --- Funciones de Dibujado ---
 
 def dibujar_tablero(pantalla):
     """Dibuja el tablero de Backgammon."""
@@ -1528,7 +1525,7 @@ def dibujar_pantalla_fin(pantalla, ganador):
     pantalla.blit(sup_continuar, rect_continuar)
 
 
-# --- Funciones de Manejo de Eventos ---
+ --- Funciones de Manejo de Eventos ---
 
 def manejar_eventos_nombre(evento, nombre_p1, nombre_p2, input_activo):
     """Gestiona los eventos durante el estado NOMBRE."""
@@ -1707,10 +1704,6 @@ def main():
 
     pygame.quit()
 
-if __name__ == '__main__':
-    main()
-
-
 ## Prompt (Se utilizó Jules)
 
 ### Quita la implementación de Player, además debes hacer lo anterior pedido que fue que al estar en el tablero te muestre de quien es el turno y que salio en su dado para que sepa que movimiento puede realizar
@@ -1721,11 +1714,11 @@ import pygame
 from core.game import Game
 from core.player import Player
 
-# --- Constantes ---
+ --- Constantes ---
 ANCHO_VENTANA = 800
 ALTO_VENTANA = 600
 
-# --- Colores ---
+ --- Colores ---
 COLOR_FONDO = (210, 180, 140)  # Un color madera claro
 COLOR_PICO_1 = (139, 69, 19)   # Marrón oscuro
 COLOR_PICO_2 = (245, 245, 220)  # Beige
@@ -1734,14 +1727,14 @@ COLOR_FICHA_BLANCA = (255, 255, 255)
 COLOR_FICHA_NEGRA = (0, 0, 0)
 COLOR_TEXTO = (20, 20, 20)
 
-# --- Dimensiones del tablero ---
+ --- Dimensiones del tablero ---
 MARGEN = 20
 ANCHO_PICO = (ANCHO_VENTANA - 2 * MARGEN) // 13  # 12 picos + 1 para la barra
 ALTO_PICO = ALTO_VENTANA // 2 - MARGEN
 ANCHO_BARRA = ANCHO_PICO
 
 
-# --- Funciones de Dibujado ---
+ --- Funciones de Dibujado ---
 
 def dibujar_tablero(pantalla):
     """Dibuja el tablero de Backgammon."""
@@ -1892,7 +1885,7 @@ def dibujar_pantalla_fin(pantalla, ganador):
     pantalla.blit(sup_continuar, rect_continuar)
 
 
-# --- Funciones de Manejo de Eventos ---
+ --- Funciones de Manejo de Eventos ---
 
 def manejar_eventos_jugando(evento, game, board, pico_seleccionado):
     """Gestiona los eventos durante el estado JUGANDO."""
@@ -2028,9 +2021,6 @@ def main():
 
     pygame.quit()
 
-if __name__ == '__main__':
-    main()
-
 ## Prompt (Se utilizó Jules)
 
 ### Punto vacío: Si el punto que corresponde al número del dado está vacío, debes retirar una ficha del punto más alto que tenga una o más de tus fichas. Por ejemplo, si sacas un (5) y el punto (5) está vacío, pero tienes fichas en el punto (3), retiras una ficha del punto (3). Implementa esta regla para el pygame y el CLI
@@ -2071,4 +2061,3 @@ In summary, while the agent correctly implemented the algorithm for the requeste
                 prompt = "Jugada (ej: mover <origen> <destino> o sacar <origen> <dado>): "
             
             entrada = input(prompt)
-

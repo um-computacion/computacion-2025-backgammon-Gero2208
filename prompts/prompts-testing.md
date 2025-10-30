@@ -217,11 +217,7 @@ He corregido varios errores en el código de las pruebas y en el código fuente 
 
 ## Prompt (Jules)
 
-### OK Name Stmts Miss Cover Missing
-cli_init_.py 0 0 100% cli\cli.py 81 55 32% 36-37, 45-52, 64-69, 80-134 core_init_.py 0 0 100% core\board.py 83 57 31% 104-192 core\checkers.py 221 76 66% 31, 35, 118, 138, 169-175, 193, 210, 239, 265, 273-275, 291-301, 320, 334-340, 342, 351-354, 357, 360, 362-363, 380, 392, 400-443 core\dice.py 15 0 100% core\exceptions.py 4 0 100% core\game.py 80 24 70% 66-68, 137-144, 167-172, 186, 213, 231-234, 252-254 core\player.py 11 0 100%
-TOTAL 495 212 57%
-
-Esta es mi cobertura de tests sobre el código de Backgammon, realiza tests que terminen de cubrir esas lineas y borra o edita los tests que redunden en lo mismo
+### cli_init_.py 0 0 100% cli\cli.py 81 55 32% 36-37, 45-52, 64-69, 80-134 core_init_.py 0 0 100% core\board.py 83 57 31% 104-192 core\checkers.py 221 76 66% 31, 35, 118, 138, 169-175, 193, 210, 239, 265, 273-275, 291-301, 320, 334-340, 342, 351-354, 357, 360, 362-363, 380, 392, 400-443 core\dice.py 15 0 100% core\exceptions.py 4 0 100% core\game.py 80 24 70% 66-68, 137-144, 167-172, 186, 213, 231-234, 252-254 core\player.py 11 0 100%. TOTAL 495 212 57%. Esta es mi cobertura de tests sobre el código de Backgammon, realiza tests que terminen de cubrir esas lineas y borra o edita los tests que redunden en lo mismo
 
 ## Response
 
@@ -696,3 +692,651 @@ class TestGame(unittest.TestCase):
         self.game.get_board_status().get_points()[0] = [self.p2.color()] * 2
         self.game.get_board_status().get_points()[1] = [self.p2.color()] * 2
         self.assertFalse(self.game.hay_movimientos_posibles())
+
+## Prompt (Se utilizó Jules)
+
+### cli\cli.py 81 55 32% 36-37, 45-52, 64-69, 80-134 haz tests para el cli para cubrir un 100%, solo haz tests de las lineas faltantes con unittests. No utilices ningun import mas. También puedes usar .mock. Puedes editar los anteriores tests para mejor eficiencia con .mock si hace falta. No utilices MagicMock para nada
+
+## Response
+
+class TestMainFunction(unittest.TestCase):
+
+    @patch('cli.cli.procesar_turno')
+    @patch('cli.cli.Game')
+    @patch('builtins.print')
+    @patch('builtins.input', side_effect=[
+        'Jugador1',  # nombre1
+        'blanco',    # color1
+        'Jugador2',  # nombre2
+        'mover 1 2',  # jugada turno 1
+    ])
+    def test_main_flujo_basico(self, mock_input, mock_print, mock_game_class, mock_procesar_turno):
+        """
+        Prueba el flujo básico de la función main: inicio, un turno y victoria.
+        """
+        # Configurar la instancia mock de Game que será devuelta por el constructor
+        mock_game_instance = mock_game_class.return_value
+        p1_mock = Player("blanco", "Jugador1", +1)
+        mock_game_instance.decidir_iniciador.return_value = (p1_mock, 6, 1)
+
+        # Simular un turno y luego un ganador
+        mock_game_instance.ganador.side_effect = [None, p1_mock]
+        mock_game_instance.jugador_actual.return_value = p1_mock
+
+        # Simular el bucle de movimientos
+        mock_game_instance.movimientos_restantes = [1]
+        def procesar_turno_side_effect(game, entrada):
+            game.movimientos_restantes = []
+        mock_procesar_turno.side_effect = procesar_turno_side_effect
+
+        mock_game_instance.hay_movimientos_posibles.return_value = True
+
+        main()
+
+        mock_procesar_turno.assert_called_once_with(mock_game_instance, 'mover 1 2')
+        mock_print.assert_any_call("¡Felicidades, Jugador1! Has ganado la partida.")
+        mock_game_instance.cambiar_turno.assert_not_called()
+
+    @patch('cli.cli.Game')
+    @patch('builtins.print')
+    @patch('builtins.input', side_effect=['p1', 'azul', 'blanco', 'p2'])
+    def test_main_color_invalido(self, mock_input, mock_print, mock_game_class):
+        """
+        Prueba que el bucle de validación de color en main funciona.
+        """
+        mock_game_instance = mock_game_class.return_value
+        p1_mock = Player("blanco", "p1", +1)
+        mock_game_instance.decidir_iniciador.return_value = (p1_mock, 1, 1)
+        mock_game_instance.ganador.return_value = p1_mock  # Termina inmediatamente
+
+        main()
+
+        mock_print.assert_any_call("Color inválido. Debe ser 'Blanco' o 'Negro'")
+        args, kwargs = mock_game_class.call_args
+        created_p1 = args[0]
+        self.assertEqual(created_p1.color(), "blanco")
+
+    @patch('cli.cli.Game')
+    @patch('builtins.print')
+    @patch('builtins.input', side_effect=['p1', 'blanco', 'p2'])
+    def test_main_sin_movimientos_posibles(self, mock_input, mock_print, mock_game_class):
+        """
+        Prueba la rama de no tener movimientos posibles en main.
+        """
+        mock_game_instance = mock_game_class.return_value
+        p1_mock = Player("blanco", "p1", +1)
+        p2_mock = Player("negro", "p2", -1)
+
+        mock_game_instance.decidir_iniciador.return_value = (p1_mock, 1, 1)
+        mock_game_instance.ganador.side_effect = [None, None, p1_mock]
+        mock_game_instance.jugador_actual.side_effect = [p1_mock, p2_mock]
+        type(mock_game_instance).movimientos_restantes = [1, 2]
+        mock_game_instance.hay_movimientos_posibles.return_value = False
+
+        main()
+
+        mock_print.assert_any_call("No tienes movimientos posibles con los dados restantes.")
+        self.assertEqual(mock_input.call_count, 3)
+        mock_game_instance.cambiar_turno.assert_called_once()
+
+## Prompt (Se utilizó Jules)
+
+### core\board.py stmts: 83 miss: 57 cover: 31% missing: 104-192 haz tests para la clase board para cubrir un 100%, solo haz tests de las lineas faltantes con unittests. No utilices ningun import mas. Puedes editar los anteriores tests para mejor eficiencia. No uses .mock para las clases, solo para el CLI.
+
+## Response
+
+def test_mostrar_tablero_cli_empty(self):
+        """
+        Prueba que la salida de un tablero vacío es correcta.
+        """
+        board = Board()
+        output = board.mostrar_tablero_cli()
+        self.assertIn("Barra: Blanco=0 Negro=0 | Final: Blanco=0 Negro=0", output)
+        self.assertIn("   13 14 15 16 17 18  19 20 21 22 23 24", output)
+        self.assertIn("   12 11 10  9  8  7   6  5  4  3  2  1", output)
+
+    def test_mostrar_tablero_cli_setup(self):
+        """
+        Prueba que la salida de un tablero recién configurado es correcta.
+        """
+        board = Board()
+        board.setup("blanco", "negro")
+        output = board.mostrar_tablero_cli()
+        self.assertIn("Barra: Blanco=0 Negro=0 | Final: Blanco=0 Negro=0", output)
+        # Verificamos la presencia de algunos contadores de fichas
+        self.assertIn("○", output)
+        self.assertIn("●", output)
+
+    def test_mostrar_tablero_cli_full_column(self):
+        """
+        Prueba que una columna con más de 5 fichas muestra el contador 'xN'.
+        """
+        board = Board()
+        board.get_points()[0] = ["blanco"] * 6
+        output = board.mostrar_tablero_cli()
+        self.assertIn("×6", output)
+
+Cambios en board:
+
+ --- Construcción de la salida ---
+        lines = []
+        lines.append("")
+        lines.append("   " + "".join(cab_sup[:6]) + " " + "".join(cab_sup[6:]))
+        lines.append(separador())
+
+        # Fila superior: se imprime de arriba (índice alto) hacia abajo (índice 0)
+        for fila in range(alto_col - 1, -1, -1):
+            fila_sup = [col[fila] for col in columnas_sup]
+            lines.append(linea_con_divisiones(fila_sup))
+
+        # Triángulos
+        triangles_up = [celda("▲")] * 12
+        lines.append(linea_con_divisiones(triangles_up))
+        lines.append(separador())
+        triangles_down = [celda("▼")] * 12
+        lines.append(linea_con_divisiones(triangles_down))
+
+        # Fila inferior
+        for fila in range(alto_col - 1, -1, -1):
+            fila_inf = [col[fila] for col in columnas_inf]
+            lines.append(linea_con_divisiones(fila_inf))
+
+        lines.append(separador())
+        lines.append("   " + "".join(cab_inf[:6]) + " " + "".join(cab_inf[6:]))
+
+        # --- Barra y fuera ---
+        bar_blanco = len(self.__bar__.get("blanco", []))
+        bar_negro = len(self.__bar__.get("negro", []))
+        off_blanco = len(self.__final__.get("blanco", []))
+        off_negro = len(self.__final__.get("negro", []))
+        lines.append(f"\nBarra: Blanco={bar_blanco} Negro={bar_negro} | "
+                     f"Final: Blanco={off_blanco} Negro={off_negro}")
+
+        return "\n".join(lines)
+
+## Prompt (Se utilizó Jules)
+
+### core\checkers.py stmts: 212 miss: 67 cover: 68% missing: 31, 35, 118, 138, 169-175, 193, 210, 239, 265, 273-275, 291-301, 320, 334-340, 342, 351-354, 357, 360, 362-363, 380, 392, 401-439 haz tests para la clase Checkers para intentar alcanzar un 100%, solo haz tests de las lineas faltantes con unittests. No utilices ningun import mas. Puedes editar los anteriores tests para mejor eficiencia. No uses .io ni .sys
+
+## Response
+
+ Destino ocupado por más de una ficha rival
+        with self.assertRaises(MovimientoInvalido):
+            Checkers.es_movimiento_valido(self.board, self.p1, 0, 5, 5)
+        # Origen o destino fuera del tablero
+        with self.assertRaises(MovimientoInvalido):
+            Checkers.es_movimiento_valido(self.board, self.p1, -1, 1, 2)
+        with self.assertRaises(MovimientoInvalido):
+            Checkers.es_movimiento_valido(self.board, self.p1, 0, 24, 24)
+        # El destino no corresponde al dado
+        with self.assertRaises(MovimientoInvalido):
+            Checkers.es_movimiento_valido(self.board, self.p1, 0, 2, 1)
+
+    def test_mover(self):
+        """
+        Prueba el movimiento de fichas, incluyendo capturas.
+        """
+        self.board.setup(self.p1.color(), self.p2.color())
+        # Movimiento simple
+        Checkers.mover(self.board, self.p1, 0, 1, 1)
+        self.assertEqual(len(self.board.get_points()[0]), 1)
+        self.assertEqual(self.board.get_points()[1], [self.p1.color()])
+        # Captura
+        self.board.get_points()[4] = [self.p2.color()]
+        Checkers.mover(self.board, self.p1, 0, 4, 4)
+        self.assertEqual(len(self.board.get_points()[0]), 0)
+        self.assertEqual(self.board.get_points()[4], [self.p1.color()])
+        self.assertEqual(self.board.get_bar()[self.p2.color()], [self.p2.color()])
+
+    def test_destinos_posibles(self):
+        """
+        Prueba que se calculan correctamente los destinos posibles.
+        """
+        self.board.setup(self.p1.color(), self.p2.color())
+        destinos = Checkers.destinos_posibles(self.board, self.p1, 0, [1, 2, 3])
+        self.assertIn(1, destinos)
+        self.assertIn(2, destinos)
+        self.assertIn(3, destinos)
+
+    def test_dado_para_movimiento(self):
+        """
+        Prueba la obtención del dado correspondiente a un movimiento.
+        """
+        self.assertEqual(Checkers.dado_para_movimiento(self.p1, 0, 1, [1, 2]), 1)
+        self.assertEqual(Checkers.dado_para_movimiento(self.p1, 0, 2, [1, 2]), 2)
+        self.assertIsNone(Checkers.dado_para_movimiento(self.p1, 0, 3, [1, 2]))
+        # Movimiento en dirección contraria
+        self.assertIsNone(Checkers.dado_para_movimiento(self.p1, 1, 0, [1]))
+
+    def test_mover_y_consumir(self):
+        """
+        Prueba que el movimiento de una ficha consume el dado correcto.
+        """
+        self.board.setup(self.p1.color(), self.p2.color())
+        dados = [1, 2]
+        dados_restantes = Checkers.mover_y_consumir(self.board, self.p1, 0, 1, dados)
+        self.assertEqual(dados_restantes, [2])
+        # Dado no disponible
+        with self.assertRaises(MovimientoInvalido):
+            Checkers.mover_y_consumir(self.board, self.p1, 0, 3, dados)
+
+    def test_hay_movimientos_posibles(self):
+        """
+        Prueba la detección de movimientos posibles.
+        """
+        self.board.setup(self.p1.color(), self.p2.color())
+        self.assertTrue(Checkers.hay_movimientos_posibles(self.board, self.p1, [1, 2]))
+        # Limpiar el tablero y crear una situación sin movimientos posibles
+        for i in range(24):
+            if self.p1.color() in self.board.get_points()[i]:
+                self.board.get_points()[i] = []
+        self.board.get_points()[0] = [self.p1.color()]
+        self.board.get_points()[1] = [self.p2.color()] * 2
+        self.assertFalse(Checkers.hay_movimientos_posibles(self.board, self.p1, [1]))
+        
+        # Caso donde solo es posible hacer bear off
+        self.board.get_points().clear()
+        self.board.get_points().extend([[] for _ in range(24)])
+        self.board.get_points()[23] = [self.p1.color()]
+        self.assertTrue(Checkers.hay_movimientos_posibles(self.board, self.p1, [1, 2]))
+
+        # Pruebas para el jugador 2 (negro)
+        self.board.setup(self.p1.color(), self.p2.color())
+        self.assertTrue(Checkers.hay_movimientos_posibles(self.board, self.p2, [1, 2]))
+        # Bloquear todos los movimientos posibles para el jugador 2 con un dado de 1
+        # Fichas de p2 en: 23, 12, 7, 5. Destinos con dado 1: 22, 11, 6, 4
+        self.board.get_points()[22] = [self.p1.color()] * 2 # Bloquea el movimiento desde 23
+        self.board.get_points()[6] = [self.p1.color()] * 2  # Bloquea el movimiento desde 7
+        self.board.get_points()[4] = [self.p1.color()] * 2  # Bloquea el movimiento desde 5
+        # El punto 11 ya está bloqueado por la configuración inicial
+        self.assertFalse(Checkers.hay_movimientos_posibles(self.board, self.p2, [1]))
+
+        # Movimiento posible solo con bear off (jugador 2)
+        self.board.get_points().clear()
+        self.board.get_points().extend([[] for _ in range(24)])
+        self.board.get_points()[0] = [self.p2.color()]
+        self.board.get_points()[2] = [self.p1.color()] * 2 # Bloquea movimiento normal
+        self.assertTrue(Checkers.hay_movimientos_posibles(self.board, self.p2, [3, 4]))
+
+    def test_puede_reingresar(self):
+        """
+        Prueba la validación de reingreso desde la barra.
+        """
+        self.board.setup(self.p1.color(), self.p2.color())
+        # Destino vacío
+        self.assertEqual(Checkers.puede_reingresar(self.board, self.p1, 1), 0)
+        # Destino con ficha propia
+        self.board.get_points()[0] = [self.p1.color()]
+        self.assertEqual(Checkers.puede_reingresar(self.board, self.p1, 1), 0)
+        # Destino con una ficha rival
+        self.board.get_points()[0] = [self.p2.color()]
+        self.assertEqual(Checkers.puede_reingresar(self.board, self.p1, 1), 0)
+        # Destino bloqueado
+        self.board.get_points()[0] = [self.p2.color()] * 2
+        self.assertIsNone(Checkers.puede_reingresar(self.board, self.p1, 1))
+
+    def test_reingresar_desde_bar(self):
+        """
+        Prueba el reingreso de fichas desde la barra.
+        """
+        self.board.get_bar()[self.p1.color()].append(self.p1.color())
+        # Reingreso simple
+        Checkers.reingresar_desde_bar(self.board, self.p1, 1)
+        self.assertFalse(self.board.get_bar()[self.p1.color()])
+        self.assertEqual(self.board.get_points()[0], [self.p1.color()])
+        # Reingreso con captura
+        self.board.get_bar()[self.p1.color()].append(self.p1.color())
+        self.board.get_points()[1] = [self.p2.color()]
+        Checkers.reingresar_desde_bar(self.board, self.p1, 2)
+        self.assertFalse(self.board.get_bar()[self.p1.color()])
+        self.assertEqual(self.board.get_points()[1], [self.p1.color()])
+        self.assertEqual(self.board.get_bar()[self.p2.color()], [self.p2.color()])
+        # Reingreso bloqueado
+        self.board.get_bar()[self.p1.color()].append(self.p1.color())
+        self.board.get_points()[0] = [self.p2.color()] * 2
+        with self.assertRaises(MovimientoInvalido):
+            Checkers.reingresar_desde_bar(self.board, self.p1, 1)
+
+    def test_todas_en_inicio(self):
+        """
+        Prueba la comprobación de si todas las fichas están en la casa.
+        """
+        # --- Pruebas para el Jugador 1 (blanco) ---
+        # Limpiar el tablero
+        self.board.get_points().clear()
+        self.board.get_points().extend([[] for _ in range(24)])
+        # Todas en casa
+        for i in range(18, 24):
+            self.board.get_points()[i] = [self.p1.color()]
+        self.assertTrue(Checkers.todas_en_inicio(self.board, self.p1))
+        # Una fuera de casa
+        self.board.get_points()[0] = [self.p1.color()]
+        self.assertFalse(Checkers.todas_en_inicio(self.board, self.p1))
+        # Una en la barra
+        self.board.get_points()[0] = []
+        self.board.get_bar()[self.p1.color()].append(self.p1.color())
+        self.assertFalse(Checkers.todas_en_inicio(self.board, self.p1))
+        self.board.get_bar()[self.p1.color()] = []
+
+        # --- Pruebas para el Jugador 2 (negro) ---
+        # Limpiar el tablero
+        self.board.get_points().clear()
+        self.board.get_points().extend([[] for _ in range(24)])
+        # Todas en casa (0-5)
+        for i in range(6):
+            self.board.get_points()[i] = [self.p2.color()]
+        self.assertTrue(Checkers.todas_en_inicio(self.board, self.p2))
+        # Una fuera de casa
+        self.board.get_points()[10] = [self.p2.color()]
+        self.assertFalse(Checkers.todas_en_inicio(self.board, self.p2))
+        # Una en la barra
+        self.board.get_points()[10] = []
+        self.board.get_bar()[self.p2.color()].append(self.p2.color())
+        self.assertFalse(Checkers.todas_en_inicio(self.board, self.p2))
+
+    def test_distancia_desde_origen(self):
+        """
+        Prueba la comprobación de fichas más alejadas del final.
+        """
+        # --- Pruebas para el Jugador 1 (blanco) ---
+        self.board.get_points().clear()
+        self.board.get_points().extend([[] for _ in range(24)])
+        self.board.get_points()[20] = [self.p1.color()]
+        self.board.get_points()[18] = [self.p1.color()]
+        # Hay ficha en 18, más alejada que 20
+        self.assertTrue(Checkers.distancia_desde_origen(self.board, self.p1, 20))
+        # No hay ficha más alejada que 18
+        self.assertFalse(Checkers.distancia_desde_origen(self.board, self.p1, 18))
+
+        # --- Pruebas para el Jugador 2 (negro) ---
+        self.board.get_points().clear()
+        self.board.get_points().extend([[] for _ in range(24)])
+        self.board.get_points()[3] = [self.p2.color()]
+        self.board.get_points()[5] = [self.p2.color()]
+        # Hay ficha en 5, más alejada que 3
+        self.assertTrue(Checkers.distancia_desde_origen(self.board, self.p2, 3))
+        # No hay ficha más alejada que 5
+        self.assertFalse(Checkers.distancia_desde_origen(self.board, self.p2, 5))
+
+    def test_puede_bear_off(self):
+        """
+        Prueba la validación de movimientos de bear off.
+        """
+        # --- Pruebas para el Jugador 1 (blanco) ---
+        # No todas en casa
+        self.board.setup(self.p1.color(), self.p2.color())
+        self.assertFalse(Checkers.puede_bear_off(self.board, self.p1, 23, 1))
+
+        # Limpiar el tablero para pruebas específicas de bear_off
+        self.board.get_points().clear()
+        self.board.get_points().extend([[] for _ in range(24)])
+        self.board.get_points()[23] = [self.p1.color()]
+        self.board.get_points()[22] = [self.p1.color()]
+
+        # Caso 1: Salida exacta es posible, pero se intenta desde otro punto
+        self.assertTrue(Checkers.puede_bear_off(self.board, self.p1, 23, 1))
+        self.assertFalse(Checkers.puede_bear_off(self.board, self.p1, 22, 1))
+
+        # Ficha superior bloquea la salida
+        self.board.get_points()[18] = [self.p1.color()]
+        self.assertFalse(Checkers.puede_bear_off(self.board, self.p1, 23, 3))
+        self.board.get_points()[18] = []
+
+        # Salida no válida (IndexError)
+        self.assertFalse(Checkers.puede_bear_off(self.board, self.p1, 23, 0))
+
+        # --- Pruebas para el Jugador 2 (negro) ---
+        self.board.get_points().clear()
+        self.board.get_points().extend([[] for _ in range(24)])
+        self.board.get_points()[0] = [self.p2.color()]
+        self.board.get_points()[1] = [self.p2.color()]
+
+        # Salida exacta es posible
+        self.assertTrue(Checkers.puede_bear_off(self.board, self.p2, 0, 1))
+        self.assertFalse(Checkers.puede_bear_off(self.board, self.p2, 1, 1))
+        # Ficha superior bloquea
+        self.board.get_points()[5] = [self.p2.color()]
+        self.assertFalse(Checkers.puede_bear_off(self.board, self.p2, 0, 3))
+
+        # Dado mayor permite sacar de punto inferior
+        self.board.get_points()[5] = []
+        self.assertTrue(Checkers.puede_bear_off(self.board, self.p2, 1, 3))
+        
+        # Punto más alto vacío
+        self.board.get_points()[0] = []
+        self.board.get_points()[1] = []
+        self.assertFalse(Checkers.puede_bear_off(self.board, self.p2, 0, 1))
+
+
+    def test_bear_off(self):
+        """
+        Prueba que se puede sacar una ficha del tablero (bear off).
+        """
+        # --- Pruebas para el Jugador 1 (blanco) ---
+        # No todas en casa
+        self.board.setup(self.p1.color(), self.p2.color())
+        with self.assertRaises(MovimientoInvalido):
+            Checkers.bear_off(self.board, self.p1, 23, 1)
+        
+        # Limpiar tablero
+        self.board.get_points().clear()
+        self.board.get_points().extend([[] for _ in range(24)])
+        self.board.get_points()[23] = [self.p1.color()]
+        self.board.get_points()[22] = [self.p1.color()]
+
+        # Movimiento normal tiene prioridad
+        self.board.get_points()[20] = [self.p1.color()]
+        with self.assertRaises(MovimientoInvalido):
+            Checkers.bear_off(self.board, self.p1, 23, 4)
+        self.board.get_points()[20] = []
+        
+        # Debe sacar desde el punto exacto
+        with self.assertRaises(MovimientoInvalido):
+            Checkers.bear_off(self.board, self.p1, 22, 1)
+
+        # Hay fichas en puntos más altos
+        self.board.get_points()[18] = [self.p1.color()]
+        with self.assertRaises(MovimientoInvalido):
+            Checkers.bear_off(self.board, self.p1, 22, 5)
+        self.board.get_points()[18] = []
+
+        # El dado no es suficientemente grande
+        with self.assertRaises(MovimientoInvalido):
+             Checkers.bear_off(self.board, self.p1, 23, 0)
+
+        # --- Pruebas para el Jugador 2 (negro) ---
+        self.board.get_points().clear()
+        self.board.get_points().extend([[] for _ in range(24)])
+        self.board.get_points()[0] = [self.p2.color()]
+        self.board.get_points()[5] = [self.p2.color()]
+
+        # Fichas más altas bloquean
+        with self.assertRaises(MovimientoInvalido):
+            Checkers.bear_off(self.board, self.p2, 0, 6)
+
+        # Salida correcta
+        Checkers.bear_off(self.board, self.p2, 5, 6)
+        self.assertEqual(self.board.get_final()[self.p2.color()], [self.p2.color()])
+
+        # Movimiento normal tiene prioridad (jugador 2)
+        self.board.get_points().clear()
+        self.board.get_points().extend([[] for _ in range(24)])
+        self.board.get_points()[1] = [self.p2.color()]
+        self.board.get_points()[2] = [self.p2.color()]
+        with self.assertRaises(MovimientoInvalido):
+            Checkers.bear_off(self.board, self.p2, 2, 2)
+
+        # Dado no es suficientemente grande
+        with self.assertRaises(MovimientoInvalido):
+            Checkers.bear_off(self.board, self.p2, 2, 1)
+
+## Prompt (Se utilizó Jules)
+
+### core\game.py stmts: 80 miss: 23 cover: 71% missing: 67-68, 137-144, 167-172, 186, 213, 231-234, 252-254 haz tests para la clase Game para intentar alcanzar un 100%, solo haz tests de las lineas faltantes con unittests. No utilices ningun import mas. Puedes editar los anteriores tests para mejor eficiencia. No uses .io ni .sys
+
+## Response
+
+Dice: 
+
+    def roll_one(self):
+        """
+        Lanza un solo dado y devuelve su valor.
+        """
+        return random.randint(1, 6)
+
+Game:
+
+While True:
+            tiro_p1 = self.__dice__.roll_one()
+            tiro_p2 = self.__dice__.roll_one()
+
+Tests_Game:
+
+import unittest
+from core.game import Game
+from core.player import Player
+from core.dice import Dice
+
+
+class TestGame(unittest.TestCase):
+    """
+    Pruebas para la clase Game.
+    """
+
+    def setUp(self):
+        """
+        Configura un nuevo juego para cada prueba.
+        """
+        self.p1 = Player("blanco", "p1", +1)
+        self.p2 = Player("negro", "p2", -1)
+        self.game = Game(self.p1, self.p2)
+
+    def test_decidir_iniciador(self):
+        """
+        Prueba que se decide un iniciador válido.
+        """
+        # --- Caso normal ---
+        iniciador, _, _ = self.game.decidir_iniciador()
+        self.assertIn(iniciador, (self.p1, self.p2))
+
+        # --- Caso con empate ---
+        # Sobrescribir roll_one para simular un empate y luego un desempate
+        # La función se llamará 4 veces: 3, 3 (empate), 5, 2 (desempate)
+        valores = [3, 3, 5, 2]
+        def mock_roll_one():
+            return valores.pop(0)
+
+        self.game.__dice__.roll_one = mock_roll_one
+        
+        iniciador, tiro_p1, tiro_p2 = self.game.decidir_iniciador()
+
+        # El ganador del desempate (5 vs 2) debe ser p1
+        self.assertEqual(iniciador, self.p1)
+        self.assertEqual(tiro_p1, 5)
+        self.assertEqual(tiro_p2, 2)
+
+    def test_jugador_actual(self):
+        """
+        Prueba que el jugador actual es uno de los dos jugadores.
+        """
+        # El iniciador se decide aleatoriamente, por lo que el jugador actual puede ser cualquiera
+        self.assertIn(self.game.jugador_actual(), (self.p1, self.p2))
+
+    def test_cambiar_turno(self):
+        """
+        Prueba que el turno se cambia correctamente entre los jugadores.
+        """
+        jugador_inicial = self.game.jugador_actual()
+        self.game.cambiar_turno()
+        self.assertNotEqual(self.game.jugador_actual(), jugador_inicial)
+        self.game.cambiar_turno()
+        self.assertEqual(self.game.jugador_actual(), jugador_inicial)
+
+    def test_lanzar_dados(self):
+        """
+        Prueba que el lanzamiento de dados devuelve un resultado válido.
+        """
+        movimientos = self.game.lanzar_dados()
+        self.assertIn(len(movimientos), (2, 4))
+        self.assertTrue(all(1 <= m <= 6 for m in movimientos))
+
+    def test_hay_movimientos_posibles(self):
+        """
+        Prueba la detección de movimientos posibles con fichas en la barra.
+        """
+        # --- Fichas en la barra con reingreso posible ---
+        self.game.get_board_status().get_bar()[self.p1.color()].append(self.p1.color())
+        self.game.movimientos_restantes = [1, 2]
+        self.assertTrue(self.game.hay_movimientos_posibles())
+
+        # --- Fichas en la barra sin reingreso posible ---
+        # Bloquear los puntos de entrada 1 y 2
+        self.game.get_board_status().get_points()[0] = [self.p2.color()] * 2
+        self.game.get_board_status().get_points()[1] = [self.p2.color()] * 2
+        self.assertFalse(self.game.hay_movimientos_posibles())
+
+    def test_posibles_entradas_desde_barra(self):
+        """
+        Prueba que se calculan correctamente las entradas posibles.
+        """
+        self.game.get_board_status().get_bar()[self.p1.color()].append(self.p1.color())
+        self.game.movimientos_restantes = [1, 3]
+        # Bloquear la entrada con el dado 3
+        self.game.get_board_status().get_points()[2] = [self.p2.color()] * 2
+        
+        entradas = self.game.posibles_entradas_desde_barra()
+        
+        self.assertEqual(len(entradas), 1)
+        self.assertEqual(entradas[0], (1, 0)) # dado 1 -> destino 0
+
+    def test_reingresar_desde_barra_dado_invalido(self):
+        """
+        Prueba que reingresar con un dado inválido lanza una excepción.
+        """
+        from core.exceptions import DadoInvalido
+        self.game.get_board_status().get_bar()[self.p1.color()].append(self.p1.color())
+        self.game.movimientos_restantes = [1, 2]
+        with self.assertRaises(DadoInvalido):
+            self.game.reingresar_desde_barra(3)
+
+    def test_sacar_ficha_dado_invalido(self):
+        """
+        Prueba que sacar ficha con un dado inválido lanza una excepción.
+        """
+        from core.exceptions import DadoInvalido
+        # Preparar el tablero para que el bear off sea legal
+        for i in range(18, 24):
+            self.game.get_board_status().get_points()[i] = [self.p1.color()]
+        self.game.movimientos_restantes = [1, 2]
+        with self.assertRaises(DadoInvalido):
+            self.game.sacar_ficha(23, 3)
+
+    def test_validar_origen_sin_movimientos(self):
+        """
+        Prueba que validar un origen sin movimientos lanza una excepción.
+        """
+        from core.exceptions import OrigenInvalido
+        # Configurar un escenario sin movimientos posibles desde el origen 0
+        self.game.movimientos_restantes = [1]
+        self.game.get_board_status().get_points()[1] = [self.p2.color()] * 2
+        with self.assertRaises(OrigenInvalido):
+            self.game.validar_origen_y_obtener_destinos(0)
+
+    def test_ganador(self):
+        """
+        Prueba que se detecta correctamente al ganador.
+        """
+        # --- Gana el Jugador 1 ---
+        for _ in range(15):
+            self.game.get_board_status().increment_final(self.p1.color())
+        self.assertEqual(self.game.ganador(), self.p1)
+        
+        # --- Resetear y probar que gana el Jugador 2 ---
+        self.setUp() # Reinicia el juego
+        for _ in range(15):
+            self.game.get_board_status().increment_final(self.p2.color())
+        self.assertEqual(self.game.ganador(), self.p2)
+
+        # --- No hay ganador ---
+        self.setUp() # Reinicia el juego
+        self.assertIsNone(self.game.ganador())

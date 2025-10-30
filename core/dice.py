@@ -64,3 +64,9 @@ class Dice:
             valor (list[int]): La lista de valores a establecer.
         """
         self.__valor__ = valor
+
+    def roll_one(self):
+        """
+        Lanza un solo dado y devuelve su valor.
+        """
+        return random.randint(1, 6)
