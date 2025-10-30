@@ -5,11 +5,13 @@ Todas las modificaciones notables de este proyecto serán documentadas en este a
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/),
 y este proyecto sigue [Semantic Versioning](https://semver.org/lang/es/).
 
-## [0.6.1] 29-10-2025
+## [0.6.2] 30-10-2025
 
 ### Added
 
 - Implementación de tests unitarios para todas las clases y CLI para llegar a un Cover de 96%
+- Implementación correcta de bear_off y sacado de fichas en Pygame
+- Mejora gráfica de la interfaz Pygame
 
 ## [0.6.1] 29-10-2025
 
