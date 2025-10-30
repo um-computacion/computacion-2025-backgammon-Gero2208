@@ -1,0 +1,118 @@
+classDiagram
+    direction TB
+
+    class Game {
+        -Player __p1__
+        -Player __p2__
+        -int __turno__
+        -Board __board__
+        -Dice __dice__
+        +list~int~ movimientos_restantes
+        +__init__(p1: Player, p2: Player)
+        +decidir_iniciador() tuple~Player, int, int~
+        +jugador_actual() Player
+        +cambiar_turno() void
+        +lanzar_dados() list~int~
+        +mover_ficha(origen: int, destino: int) void
+        +get_board_status() Board
+        +hay_movimientos_posibles() bool
+        +jugador_tiene_fichas_en_barra() list~str~
+        +posibles_entradas_desde_barra() list~tuple~
+        +reingresar_desde_barra(dado: int) void
+        +todas_fichas_en_casa() bool
+        +sacar_ficha(origen: int, dado: int) void
+        +validar_origen_y_obtener_destinos(origen: int) list~int~
+        +ganador() Player or None
+    }
+
+    class Player {
+        -str __nombre__
+        -str __color__
+        -int __direccion__
+        +__init__(color: str, nombre: str, direccion: int)
+        +nombre() str
+        +color() str
+        +direccion() int
+    }
+
+    class Board {
+        -list~list~str~~ __points__
+        -dict~str, list~str~~ __bar__
+        -dict~str, list~str~~ __final__
+        +__init__()
+        +get_bar() dict~str, list~str~~
+        +get_points() list~list~str~~
+        +increment_final(color: str) void
+        +get_final() dict~str, list~str~~
+        +setup(color1: str, color2: str) void
+        +mostrar_tablero_cli(alto_col: int, ancho_col: int, simbolos: dict) str
+    }
+
+    class Dice {
+        -list~int~ __valor__
+        +__init__()
+        +roll() list~int~
+        +dobles() bool
+        +duplicar() list~int~
+        +set_valor(valor: list~int~) void
+        +roll_one() int
+    }
+
+    class Checkers {
+        <<static>>
+        +es_movimiento_valido(board: Board, jugador: Player, origen: int, destino: int, dado: int)$ void
+        +mover(board: Board, jugador: Player, origen: int, destino: int, dado: int)$ void
+        +destinos_posibles(board: Board, jugador: Player, origen: int, dados: list~int~)$ list~int~
+        +dado_para_movimiento(jugador: Player, origen: int, destino: int, dados: list~int~)$ int or None
+        +mover_y_consumir(board: Board, jugador: Player, origen: int, destino: int, dados: list~int~)$ list~int~
+        +hay_movimientos_posibles(board: Board, jugador: Player, dados: list~int~)$ bool
+        +destino_entrada_por_dado(jugador: Player, dado: int)$ int
+        +puede_reingresar(board: Board, jugador: Player, dado: int)$ int or None
+        +reingresar_desde_bar(board: Board, jugador: Player, dado: int)$ void
+        +todas_en_inicio(board: Board, jugador: Player)$ bool
+        +distancia_desde_origen(board: Board, jugador: Player, origen: int)$ bool
+        +puede_bear_off(board: Board, jugador: Player, origen: int, dado: int)$ bool
+        +bear_off(board: Board, jugador: Player, origen: int, dado: int)$ void
+    }
+
+    class BackgammonException {
+        <<exception>>
+    }
+
+    class MovimientoInvalido {
+        <<exception>>
+    }
+
+    class DadoInvalido {
+        <<exception>>
+    }
+
+    class OrigenInvalido {
+        <<exception>>
+    }
+
+    %% Relaciones de composición y agregación
+    Game *-- Board : contiene
+    Game *-- Dice : contiene
+    Game o-- Player : jugador 1
+    Game o-- Player : jugador 2
+
+    %% Relaciones de dependencia
+    Game ..> Checkers : usa
+    Game ..> MovimientoInvalido : lanza
+    Game ..> DadoInvalido : lanza
+    Game ..> OrigenInvalido : lanza
+    
+    Checkers ..> Board : manipula
+    Checkers ..> Player : consulta
+    Checkers ..> MovimientoInvalido : lanza
+
+    %% Herencia de excepciones
+    BackgammonException <|-- MovimientoInvalido
+    BackgammonException <|-- DadoInvalido
+    BackgammonException <|-- OrigenInvalido
+
+    %% Notas adicionales
+    note for Game "Orquesta la partida completa\nGestiona turnos, dados y validaciones"
+    note for Checkers "Lógica estática de movimientos\nNo mantiene estado"
+    note for Board "Representa el estado del tablero\n24 puntos + barra + final"
