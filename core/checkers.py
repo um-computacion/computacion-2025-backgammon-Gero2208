@@ -396,48 +396,44 @@ class Checkers:
             board.increment_final(color)
             return
 
-        # Si el punto exacto está libre, comprobar si hay fichas en puntos superiores
-        hay_fichas_superiores = False
-        if direccion == 1:  # Casa en 18-23
-            for i in range(18, punto_exacto):
-                if puntos[i] and puntos[i][0] == color:
-                    hay_fichas_superiores = True
-                    break
-        else:  # Casa en 0-5
-            for i in range(punto_exacto + 1, 6):
-                if puntos[i] and puntos[i][0] == color:
-                    hay_fichas_superiores = True
-                    break
+        # Caso 2: El punto exacto está libre.
+        # Primero, intentar un movimiento normal desde un punto más alto.
+        punto_inicio_casa = 18 if direccion == 1 else 0
+        rango_casa = range(punto_inicio_casa, punto_inicio_casa + 6)
 
-        if hay_fichas_superiores:
-            raise MovimientoInvalido(
-                "No puedes sacar fichas si tienes otras en puntos más altos."
-            )
+        # Buscar si existe un movimiento válido dentro de la casa
+        for i in rango_casa:
+            if puntos[i] and puntos[i][0] == color:
+                destino = i + direccion * dado
+                try:
+                    Checkers.es_movimiento_valido(board, jugador, i, destino, dado)
+                    # Si llegamos aquí, un movimiento normal es posible
+                    raise MovimientoInvalido(
+                        f"Debes mover una ficha desde {i+1} antes de sacar otra."
+                    )
+                except (MovimientoInvalido, IndexError):
+                    continue
 
-        # Caso 2: El punto exacto está vacío y no hay fichas en puntos superiores
-        # Buscar el punto más alto ocupado
-        punto_mas_alto = -1
-        if direccion == 1:  # Casa en 18-23, el más alto es el de mayor índice
-            for i in range(23, 17, -1):
-                if puntos[i] and puntos[i][0] == color:
-                    punto_mas_alto = i
-                    break
-        else:  # Casa en 0-5, el más alto es el de menor índice
-            for i in range(5, -1, -1):
-                if puntos[i] and puntos[i][0] == color:
-                    punto_mas_alto = i
-                    break
-        if punto_mas_alto == -1:
-            raise MovimientoInvalido("No tienes fichas para sacar.")
+        # Si no hay movimientos normales posibles, se puede sacar una ficha.
+        # El dado debe ser mayor o igual a la distancia del punto de origen.
+        distancia_origen = (24 - origen) if direccion == 1 else (origen + 1)
 
-        # El dado debe ser mayor o igual a la distancia del punto más alto
-        distancia_mas_alta = (24 - punto_mas_alto) if direccion == 1 else (punto_mas_alto + 1)
-        if dado >= distancia_mas_alta:
-            if origen != punto_mas_alto:
-                raise MovimientoInvalido(
-                    f"Debes sacar la ficha desde tu punto más alto: {punto_mas_alto + 1}."
-                )
+        if dado >= distancia_origen:
+            # Además, no debe haber fichas en puntos más altos que el origen.
+            if direccion == 1:
+                for i in range(punto_inicio_casa, origen):
+                    if puntos[i] and puntos[i][0] == color:
+                        raise MovimientoInvalido(
+                            "No puedes sacar esta ficha, hay otras en puntos más altos."
+                        )
+            else: # dirección -1
+                for i in range(origen + 1, punto_inicio_casa + 6):
+                    if puntos[i] and puntos[i][0] == color:
+                        raise MovimientoInvalido(
+                            "No puedes sacar esta ficha, hay otras en puntos más altos."
+                        )
+            
             puntos[origen].pop()
             board.increment_final(color)
         else:
-            raise MovimientoInvalido("No puedes usar ese dado para sacar una ficha.")
+            raise MovimientoInvalido(f"No puedes usar un {dado} para sacar una ficha del punto {origen + 1}.")
