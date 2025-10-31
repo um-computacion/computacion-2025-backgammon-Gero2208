@@ -33,13 +33,13 @@ y este proyecto sigue [Semantic Versioning](https://semver.org/lang/es/).
 
 ### Added
 
--Implementación de tests unitarios para la clase Board
--Implementación de tests unitarios para la clase Checkers
--Implementación de tests unitarios para el CLI
--Implementación de tests unitarios para la clase Dice
--Implementación de tests unitarios para la clase Game
--Implementación de tests unitarios para la clase Player
--Cambios en el CLI para facilitar los tests unitarios para este
+- Implementación de tests unitarios para la clase Board
+- Implementación de tests unitarios para la clase Checkers
+- Implementación de tests unitarios para el CLI
+- Implementación de tests unitarios para la clase Dice
+- Implementación de tests unitarios para la clase Game
+- Implementación de tests unitarios para la clase Player
+- Cambios en el CLI para facilitar los tests unitarios para este
 
 ## [0.5.0] 25-10-2025
 
