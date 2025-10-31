@@ -4,7 +4,7 @@ Este módulo contiene las pruebas unitarias para la clase Game.
 import unittest
 from core.game import Game
 from core.player import Player
-from core.dice import Dice
+from core.exceptions import DadoInvalido, OrigenInvalido
 
 
 class TestGame(unittest.TestCase):
@@ -36,7 +36,7 @@ class TestGame(unittest.TestCase):
             return valores.pop(0)
 
         self.game.__dice__.roll_one = mock_roll_one
-        
+
         iniciador, tiro_p1, tiro_p2 = self.game.decidir_iniciador()
 
         # El ganador del desempate (5 vs 2) debe ser p1
@@ -92,9 +92,9 @@ class TestGame(unittest.TestCase):
         self.game.movimientos_restantes = [1, 3]
         # Bloquear la entrada con el dado 3
         self.game.get_board_status().get_points()[2] = [self.p2.color()] * 2
-        
+
         entradas = self.game.posibles_entradas_desde_barra()
-        
+
         self.assertEqual(len(entradas), 1)
         self.assertEqual(entradas[0], (1, 0)) # dado 1 -> destino 0
 
@@ -102,7 +102,6 @@ class TestGame(unittest.TestCase):
         """
         Prueba que reingresar con un dado inválido lanza una excepción.
         """
-        from core.exceptions import DadoInvalido
         self.game.get_board_status().get_bar()[self.p1.color()].append(self.p1.color())
         self.game.movimientos_restantes = [1, 2]
         with self.assertRaises(DadoInvalido):
@@ -112,7 +111,6 @@ class TestGame(unittest.TestCase):
         """
         Prueba que sacar ficha con un dado inválido lanza una excepción.
         """
-        from core.exceptions import DadoInvalido
         # Preparar el tablero para que el bear off sea legal
         for i in range(18, 24):
             self.game.get_board_status().get_points()[i] = [self.p1.color()]
@@ -124,7 +122,6 @@ class TestGame(unittest.TestCase):
         """
         Prueba que validar un origen sin movimientos lanza una excepción.
         """
-        from core.exceptions import OrigenInvalido
         # Configurar un escenario sin movimientos posibles desde el origen 0
         self.game.movimientos_restantes = [1]
         self.game.get_board_status().get_points()[1] = [self.p2.color()] * 2
@@ -139,7 +136,7 @@ class TestGame(unittest.TestCase):
         for _ in range(15):
             self.game.get_board_status().increment_final(self.p1.color())
         self.assertEqual(self.game.ganador(), self.p1)
-        
+
         # --- Resetear y probar que gana el Jugador 2 ---
         self.setUp() # Reinicia el juego
         for _ in range(15):
