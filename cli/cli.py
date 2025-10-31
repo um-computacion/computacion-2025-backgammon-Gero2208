@@ -7,6 +7,41 @@ from core.game import Game
 from core.exceptions import BackgammonException
 
 
+def _procesar_reingreso(game, partes):
+    """Procesa el comando de reingreso."""
+    if len(partes) == 2:
+        dado = int(partes[1])
+        game.reingresar_desde_barra(dado)
+        return True
+    print("Comando inválido. Debes usar: reingresar <dado>")
+    return False
+
+def _procesar_casa(game, comando, partes):
+    """Procesa los comandos cuando todas las fichas están en casa."""
+    if comando == 'sacar' and len(partes) == 3:
+        origen = int(partes[1]) - 1
+        dado = int(partes[2])
+        game.sacar_ficha(origen, dado)
+        return True
+    if comando == 'mover' and len(partes) == 3:
+        origen = int(partes[1]) - 1
+        destino = int(partes[2]) - 1
+        game.mover_ficha(origen, destino)
+        return True
+    print("Comando inválido. Usa: sacar <origen> <dado> o mover <origen> <destino>")
+    return False
+
+def _procesar_normal(game, comando, partes):
+    """Procesa los comandos en el estado de juego normal."""
+    if comando == 'mover' and len(partes) == 3:
+        origen = int(partes[1]) - 1
+        destino = int(partes[2]) - 1
+        game.mover_ficha(origen, destino)
+        return True
+    print("Comando inválido. Usa: mover <origen> <destino>")
+    return False
+
+
 def procesar_turno(game, entrada_usuario):
     """
     Procesa la entrada del usuario para un turno de juego.
@@ -28,38 +63,12 @@ def procesar_turno(game, entrada_usuario):
         comando = partes[0].lower()
 
         if game.jugador_tiene_fichas_en_barra():
-            if comando == 'reingresar' and len(partes) == 2:
-                dado = int(partes[1])
-                game.reingresar_desde_barra(dado)
-                return True
-            else:
-                print("Comando inválido. Debes usar: reingresar <dado>")
-                return False
+            return _procesar_reingreso(game, partes)
 
-        elif game.todas_fichas_en_casa():
-            if comando == 'sacar' and len(partes) == 3:
-                origen = int(partes[1]) - 1
-                dado = int(partes[2])
-                game.sacar_ficha(origen, dado)
-                return True
-            elif comando == 'mover' and len(partes) == 3:
-                origen = int(partes[1]) - 1
-                destino = int(partes[2]) - 1
-                game.mover_ficha(origen, destino)
-                return True
-            else:
-                print("Comando inválido. Usa: sacar <origen> <dado> o mover <origen> <destino>")
-                return False
+        if game.todas_fichas_en_casa():
+            return _procesar_casa(game, comando, partes)
 
-        else:
-            if comando == 'mover' and len(partes) == 3:
-                origen = int(partes[1]) - 1
-                destino = int(partes[2]) - 1
-                game.mover_ficha(origen, destino)
-                return True
-            else:
-                print("Comando inválido. Usa: mover <origen> <destino>")
-                return False
+        return _procesar_normal(game, comando, partes)
 
     except (ValueError, IndexError):
         print("Entrada inválida. Asegúrate de que los números son correctos.")

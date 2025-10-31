@@ -12,6 +12,8 @@ y este proyecto sigue [Semantic Versioning](https://semver.org/lang/es/).
 - Implementación de tests unitarios para todas las clases y CLI para llegar a un Cover de 96%
 - Implementación correcta de bear_off y sacado de fichas en Pygame
 - Mejora gráfica de la interfaz Pygame
+- Implementación de archivo CHANGELOG.md y JUSTIFICACION.md
+- Cambios generales para lograr un puntaje de código de 9.59/10
 
 ## [0.6.1] 29-10-2025
 

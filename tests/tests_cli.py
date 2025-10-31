@@ -125,7 +125,9 @@ if __name__ == '__main__':
 
 
 class TestMainFunction(unittest.TestCase):
-
+    """
+    Pruebas para la función main de la CLI.
+    """
     @patch('cli.cli.procesar_turno')
     @patch('cli.cli.Game')
     @patch('builtins.print')
@@ -151,6 +153,7 @@ class TestMainFunction(unittest.TestCase):
         # Simular el bucle de movimientos
         mock_game_instance.movimientos_restantes = [1]
         def procesar_turno_side_effect(game, entrada):
+            del entrada
             game.movimientos_restantes = []
         mock_procesar_turno.side_effect = procesar_turno_side_effect
 
@@ -169,6 +172,7 @@ class TestMainFunction(unittest.TestCase):
         """
         Prueba que el bucle de validación de color en main funciona.
         """
+        del mock_input
         mock_game_instance = mock_game_class.return_value
         p1_mock = Player("blanco", "p1", +1)
         mock_game_instance.decidir_iniciador.return_value = (p1_mock, 1, 1)
@@ -177,7 +181,7 @@ class TestMainFunction(unittest.TestCase):
         main()
 
         mock_print.assert_any_call("Color inválido. Debe ser 'Blanco' o 'Negro'")
-        args, kwargs = mock_game_class.call_args
+        args, _ = mock_game_class.call_args
         created_p1 = args[0]
         self.assertEqual(created_p1.color(), "blanco")
 

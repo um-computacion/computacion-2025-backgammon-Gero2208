@@ -4,7 +4,7 @@ Este módulo contiene la clase Game, que orquesta una partida de Backgammon.
 from .board import Board
 from .checkers import Checkers
 from .dice import Dice
-from .exceptions import MovimientoInvalido, DadoInvalido, OrigenInvalido
+from .exceptions import DadoInvalido, OrigenInvalido
 
 
 class Game:
@@ -183,7 +183,7 @@ class Game:
         """
         if dado not in self.movimientos_restantes:
             raise DadoInvalido("No tienes ese dado disponible.")
-        
+
         Checkers.reingresar_desde_bar(self.__board__, self.jugador_actual(), dado)
         self.movimientos_restantes.remove(dado)
 
@@ -210,7 +210,6 @@ class Game:
         """
         if dado not in self.movimientos_restantes:
             raise DadoInvalido("No tienes ese dado disponible.")
-        
         Checkers.bear_off(self.__board__, self.jugador_actual(), origen, dado)
         self.movimientos_restantes.remove(dado)
 
@@ -227,9 +226,15 @@ class Game:
         Raises:
             OrigenInvalido: Si no hay movimientos posibles desde el origen.
         """
-        destinos = Checkers.destinos_posibles(self.__board__, self.jugador_actual(), origen, self.movimientos_restantes)
+        destinos = Checkers.destinos_posibles(
+            self.__board__, self.jugador_actual(),
+            origen, self.movimientos_restantes
+        )
         if not destinos:
-            raise OrigenInvalido(f"No hay movimientos posibles desde la casilla {origen + 1} con los dados actuales.")
+            raise OrigenInvalido(
+                f"No hay movimientos posibles desde la casilla {origen + 1} "
+                "con los dados actuales."
+            )
         return destinos
 
     def ganador(self):
