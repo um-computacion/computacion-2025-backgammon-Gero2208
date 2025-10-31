@@ -1,5 +1,5 @@
 # Prompts para el desarrollo del videojuego Backgammon
-## Modelo utilizado: GPT-5 mini (Excepto que se aclare en el prompt)
+**Modelo utilizado: GPT-5 mini (Excepto que se aclare en el prompt)**
 
 ## Prompt
 
