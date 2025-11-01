@@ -12,19 +12,55 @@
 
 Este proyecto implementa el juego clásico de Backgammon con todas sus reglas oficiales, ofreciendo dos formas de jugar:
 
-- **Interfaz Gráfica (Pygame):** Experiencia visual completa con ayudas interactivas
-- **Interfaz CLI:** Juego rápido y directo desde la terminal
+- **Interfaz Gráfica (Pygame):** Experiencia visual completa con ayudas interactivas.
+- **Interfaz CLI:** Juego rápido y directo desde la terminal, compatible con Docker.
 
 El diseño modular permite que ambas interfaces compartan la misma lógica de negocio (directorio `core`), garantizando consistencia y facilitando el mantenimiento.
 
 ---
 
-## Instalación y Configuración
+## Ejecución con Docker (Recomendado para CLI, incompatible con interfaz gráfica)
+
+La forma más sencilla de ejecutar el proyecto es a través de Docker, que gestiona todas las dependencias en un entorno aislado.
+
+### Requisitos Previos
+
+- **Docker y Docker Compose**: Asegúrate de tenerlos instalados y en ejecución.
+
+### 1. Construir la imagen de Docker
+
+Este comando crea el entorno de la aplicación, instalando todas las dependencias necesarias. Solo necesitas ejecutarlo la primera vez o si modificas `requirements.txt`.
+
+```bash
+docker-compose build
+```
+
+### 2. Jugar al CLI desde Docker
+
+Una vez construida la imagen, puedes iniciar la interfaz de línea de comandos de forma interactiva.
+
+```bash
+docker-compose run --rm cli
+```
+
+### 3. Correr los tests + coverage desde Docker
+
+Para ejecutar la suite completa de tests y ver el informe de cobertura de código:
+
+```bash
+docker-compose run --rm tests
+```
+
+---
+
+## Ejecución Local (Alternativa para CLI, compatible con interfaz gráfica)
+
+Si prefieres no usar Docker, puedes seguir estos pasos.
 
 ### Requisitos Previos
 
 - **Python 3.8 o superior**
-- pip (gestor de paquetes de Python)
+- **pip** (gestor de paquetes de Python)
 
 ### Pasos de Instalación
 
@@ -37,11 +73,13 @@ python -m venv .venv
 **2. Activar el entorno virtual**
 
 En **Windows (Git Bash)**:
+
 ```bash
 source .venv/Scripts/activate
 ```
 
 En **Windows (CMD/PowerShell)**:
+
 ```cmd
 .venv\Scripts\activate
 ```
@@ -52,21 +90,15 @@ En **Windows (CMD/PowerShell)**:
 pip install -r requirements.txt
 ```
 
----
+### Cómo Ejecutar
 
-## Cómo Ejecutar
-
-### Interfaz Gráfica (Pygame)
-
-Ejecuta el juego con ventana visual:
+#### Interfaz Gráfica (Pygame)
 
 ```bash
 python -m pygame_ui.ui
 ```
 
-### Interfaz de Terminal (CLI)
-
-Juega directamente en la consola:
+#### Interfaz de Terminal (CLI)
 
 ```bash
 python -m cli.cli
@@ -101,25 +133,28 @@ python -m cli.cli
 
 ### Indicadores Visuales
 
--  **Contorno amarillo:** Ficha seleccionada actualmente
--  **Contornos verdes:** Destinos válidos para el movimiento
--  **Panel inferior:** Muestra dados actuales y movimientos restantes
--  **Barra central:** Fichas capturadas (grises)
--  **Botón "Sacar":** Disponible solo cuando todas tus fichas están en casa
+- **Contorno amarillo:** Ficha seleccionada actualmente
+- **Contornos verdes:** Destinos válidos para el movimiento
+- **Panel inferior:** Muestra dados actuales y movimientos restantes
+- **Barra central:** Fichas capturadas (grises)
+- **Botón "Sacar":** Disponible solo cuando todas tus fichas están en casa
 
 ### Reglas Especiales
 
-**Fichas en la Barra**
+#### Fichas en la Barra
+
 - Si tienes fichas capturadas, **debes reingresarlas** antes de hacer otros movimientos
 - Haz clic en el punto de entrada correspondiente al valor del dado
 
-**Bear-off (Sacar Fichas)**
+#### Bear-off (Sacar Fichas)
+
 - Solo disponible cuando **todas** tus fichas están en tu cuadrante final
   - Blancas: puntos 19-24
   - Negras: puntos 1-6
 - Usa el botón "Sacar" después de seleccionar la ficha
 
-**Cambio Automático de Turno**
+#### Cambio Automático de Turno
+
 - El turno cambia cuando:
   - Se han usado todos los dados
   - No hay movimientos posibles con los dados restantes
@@ -154,10 +189,12 @@ mover <origen> <destino>
 ```
 
 **Ejemplo:**
+
 ```
 Movimientos restantes: [3, 5]
 > mover 1 4
 ```
+
 Mueve una ficha del punto 1 al punto 4 usando el dado de valor 3.
 
 #### 2. Reingreso desde la Barra
@@ -169,6 +206,7 @@ reingresar <valor_dado>
 ```
 
 **Ejemplo:**
+
 ```
 Tienes fichas en la barra. Debes reingresarlas.
 Movimientos restantes: [2, 5]
@@ -184,6 +222,7 @@ sacar <origen> <valor_dado>
 ```
 
 **Ejemplo:**
+
 ```
 Todas tus fichas están en casa. Puedes sacarlas.
 Movimientos restantes: [4, 6]
@@ -191,6 +230,7 @@ Movimientos restantes: [4, 6]
 ```
 
 O hacer movimientos normales dentro de casa:
+
 ```
 > mover 23 19
 ```
@@ -213,22 +253,6 @@ El proyecto implementa **todas** las reglas oficiales del Backgammon:
 
 ---
 
-## Testing
-
-### Ejecutar Tests
-
-**Todos los tests:**
-```bash
-python -m unittest
-```
-
-**Test específico:**
-```bash
-python -m unittest tests.tests_game
-```
-
----
-
 ## Documentación
 
 - **CHANGELOG.md**: Historial completo de versiones y cambios del proyecto
@@ -244,6 +268,7 @@ python -m unittest tests.tests_game
 ## Tecnologías Utilizadas
 
 - **Python 3.8+**: Lenguaje de programación
+- **Docker**: Plataforma de containerización
 - **Pygame**: Biblioteca para interfaz gráfica
 - **unittest**: Framework de testing integrado
 - **GitHub Copilot / Jules**: Asistencia con IA durante el desarrollo
