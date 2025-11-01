@@ -5,147 +5,214 @@ Todas las modificaciones notables de este proyecto serán documentadas en este a
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/),
 y este proyecto sigue [Semantic Versioning](https://semver.org/lang/es/).
 
-## [0.6.4] 1-11-2025
+## [1.0.0] - 2025-11-01
 
 ### Added
 
-- Se implementa Docker para correr el CLI y los tests
+- Soporte completo para ejecutar el juego mediante Docker
+- Servicio CLI containerizado para jugar desde Docker
+- Servicio de tests containerizado con reporte de cobertura
 
-## [0.6.3] 31-10-2025
+### Changed
 
-### Added
+- Reorganización de la documentación del proyecto
+- Actualización del README con instrucciones de Docker
 
-- Arreglo de bugs para la interfaz gráfica
+## [0.8.1] - 2025-10-31
 
-## [0.6.2] 30-10-2025
+### Fixed
 
-### Added
+- Corrección de bugs críticos en la interfaz gráfica de Pygame
+- Arreglo de comportamiento inesperado en selección de fichas
+- Mejora en la gestión de eventos de mouse
 
-- Implementación de tests unitarios para todas las clases y CLI para llegar a un Cover de 96%
-- Implementación correcta de bear_off y sacado de fichas en Pygame
-- Mejora gráfica de la interfaz Pygame
-- Implementación de archivo CHANGELOG.md y JUSTIFICACION.md
-- Cambios generales para lograr un puntaje de código de 9.59/10
-
-## [0.6.1] 29-10-2025
-
-### Added
-
-- Corrección de bear_off que no funcionaba correctamente la regla de "Sacar una ficha de un punto más alto (el caso especial)"
-
-## [0.6.0] 28-10-2025
+## [0.8.0] - 2025-10-30
 
 ### Added
 
-- Implementación de la interfaz gráfica mediante la biblioteca Pygame
-- Se actualizan los métodos del bear_off para una funcionalidad correcta
-- Corrección de bugs para la lógica de bear_off junto con el método hay_movimientos_posibles
-- Corrección de bugs para la interfaz gráfica donde no dejaba cambiar de turno
-- Mejoras en la explicación de movimientos del CLI
+- Suite completa de tests unitarios para todas las clases del core
+- Tests unitarios para CLI con cobertura del 96%
+- Archivo CHANGELOG.md siguiendo convenciones estándar
+- Archivo JUSTIFICACION.md con decisiones de diseño y arquitectura
+- Diagrama UML completo del sistema
 
-## [0.5.1] 27-10-2025
+### Changed
 
-### Added
+- Refactorización general del código para mejorar calidad
+- Mejora de la puntuación de código a 9.59/10
 
-- Implementación de tests unitarios para la clase Board
-- Implementación de tests unitarios para la clase Checkers
-- Implementación de tests unitarios para el CLI
-- Implementación de tests unitarios para la clase Dice
-- Implementación de tests unitarios para la clase Game
-- Implementación de tests unitarios para la clase Player
-- Cambios en el CLI para facilitar los tests unitarios para este
+### Fixed
 
-## [0.5.0] 25-10-2025
+- Corrección de la implementación de bear-off en Pygame
+- Arreglo de bugs en el sistema de sacado de fichas
 
-### Added
+## [0.7.1] - 2025-10-29
 
-- Implementación lógica para el sistema de bear_off, sacar fichas del tablero una vez llegado a la zona de home para ganar
-- Implementación de los métodos todas_en_inicio, distancia_desde_origen, puede_bear_off y bear_off para la clase Checkers
-- Implementación del método ganador para la clase Game
-- Implementación de cambios en CLI para gestionar el bear off y declarar ganador
-- Corrección de bug, crashea el CLI al intentar sacar fichas del tablero para bear off
-- Implementación de la Single Responsability Principle de los principios SOLID para la clase Game
+### Fixed
 
-## [0.4.2] 21-10-2025
+- Corrección de la regla especial de bear-off para sacar fichas desde puntos más altos
+- Arreglo del caso especial cuando no hay punto exacto disponible para el dado
+
+## [0.7.0] - 2025-10-28
 
 ### Added
 
-- Implementación lógica para el sistema de comer fichas, ingreso y reingreso desde la barra
-- Implementación del método destino_entrada_por_dado para la clase Checkers
-- Implementación del método puede_reingresar para la clase Checkers
-- Implementación del método reingresar_desde_bar para la clase Checkers
-- Cambios en CLI para implementar todos estos métodos
-- Se corrigio un bug en el cual al tener dados dobles se multiplicaban el destino posible una vez seleccionada una casilla
+- Implementación completa de la interfaz gráfica con Pygame
+- Sistema de renderizado visual del tablero
+- Interacción con mouse para seleccionar y mover fichas
+- Panel de información con datos del turno y dados
+- Pantallas de inicio, juego y fin de partida
 
-## [0.4.1] 20-10-2025
+### Changed
 
-### Added
+- Actualización de métodos de bear-off para mejor funcionalidad
+- Mejoras en las explicaciones de movimientos del CLI
 
-- Implementación de lógica para el sistema de movimientos
-- Implementación del método dado_para_movimiento para la clase Checkers
-- Implementación del método mover_y_consumir para la clase Checkers
-- Implementación del método hay_movimientos_posibles para la clase Checkers
-- Correción de bugs y avance en CLI para gestión de turnos con movimientos
-- Implementación de método para la clase Game para elegir quien inicia la partida
+### Fixed
 
-## [0.4.0] 07-10-2025
+- Corrección de bugs en la lógica de bear-off
+- Arreglo del método `hay_movimientos_posibles` para detectar bear-off
+- Corrección de bug que impedía el cambio automático de turno en Pygame
 
-### Added
-
-- Implementación de la clase Checkers
-- Implementación del método es_movimiento_valido para la clase Checkers
-- Implementación del método mover para la clase Checkers
-- Implementación del método destinos_posibles para la clase Checkers
-- Implementación de movimientos para el CLI
-
-## [0.3.2] 30-09-2025
+## [0.6.0] - 2025-10-27
 
 ### Added
 
-- Implementación de atributos para la clase Game
-- Implementación del método jugador_actual para la clase Game
-- Implementación del método cambiar_turno para la clase Game
-- Implementación de dos métodos en Player para obtener nombre y color
-- Implementación de Dice en CLI para realizar tiradas y duplicar tiradas del mismo valor
+- Tests unitarios para la clase `Board`
+- Tests unitarios para la clase `Checkers`
+- Tests unitarios para el CLI
+- Tests unitarios para la clase `Dice`
+- Tests unitarios para la clase `Game`
+- Tests unitarios para la clase `Player`
 
-## [0.3.1] 28-09-2025
+### Changed
 
-### Added
+- Modificación del CLI para facilitar la creación de tests unitarios
+- Refactorización de métodos para mejor testabilidad
 
-- Mejora gráfica del tablero para el CLI
-- Implementación de atributos para la clase Dice
-- Implementación del método roll para la clase Dice
-- Implementación del método dobles para la clase Dice
-- Tests para la clase Dice
-
-## [0.3.0] 24-09-2025
+## [0.5.0] - 2025-10-25
 
 ### Added
 
-- Implementación del método mostrar_tablero_cli en la clase Board para representar el tablero de Backgammon en la consola con triángulos y detalles de fichas.
+- Implementación completa del sistema de bear-off (sacar fichas del tablero)
+- Método `todas_en_inicio` en la clase `Checkers`
+- Método `distancia_desde_origen` en la clase `Checkers`
+- Método `puede_bear_off` en la clase `Checkers`
+- Método `bear_off` en la clase `Checkers`
+- Método `ganador` en la clase `Game` para detectar fin de partida
+- Gestión de bear-off en el CLI
+- Sistema de declaración de ganador en el CLI
 
-## [0.2.2] 17-09-2025
+### Changed
 
-### Added
+- Aplicación del principio de Responsabilidad Única (SRP) en la clase `Game`
 
-- Implementación de atributos básicos de la clase Player.
-- Implementación del método asignar_color_opuesto a la clase Player.
+### Fixed
 
-## [0.2.1] 16-09-2025
+- Corrección de crash en CLI al intentar sacar fichas del tablero
 
-### Added
-
-- Implementación del inicio del CLI.
-
-## [0.2.0] 15-09-2025
-
-### Added
-
-- Implementación del método setup a la clase Board para inicializar el tablero con la disposición estándar de Backgammon.
-
-## [0.1.0] 4-09-2025
+## [0.4.2] - 2025-10-21
 
 ### Added
 
-- Implementación del esqueleto del proyecto
-- Implementación de archivo requeriments.txt
+- Sistema completo de captura de fichas
+- Lógica de ingreso y reingreso desde la barra
+- Método `destino_entrada_por_dado` en la clase `Checkers`
+- Método `puede_reingresar` en la clase `Checkers`
+- Método `reingresar_desde_bar` en la clase `Checkers`
+- Comandos en CLI para gestionar fichas en la barra
+
+### Fixed
+
+- Corrección de bug en destinos posibles con dados dobles (duplicación incorrecta)
+
+## [0.4.1] - 2025-10-20
+
+### Added
+
+- Lógica completa del sistema de movimientos
+- Método `dado_para_movimiento` en la clase `Checkers`
+- Método `mover_y_consumir` en la clase `Checkers`
+- Método `hay_movimientos_posibles` en la clase `Checkers`
+- Método `decidir_iniciador` en la clase `Game`
+- Gestión de turnos con movimientos en el CLI
+
+### Fixed
+
+- Corrección de múltiples bugs en la gestión de turnos
+
+## [0.4.0] - 2025-10-07
+
+### Added
+
+- Clase `Checkers` con lógica estática de movimientos
+- Método `es_movimiento_valido` en la clase `Checkers`
+- Método `mover` en la clase `Checkers`
+- Método `destinos_posibles` en la clase `Checkers`
+- Sistema de movimientos en el CLI
+
+## [0.3.2] - 2025-09-30
+
+### Added
+
+- Atributos principales de la clase `Game`
+- Método `jugador_actual` en la clase `Game`
+- Método `cambiar_turno` en la clase `Game`
+- Método `nombre` en la clase `Player`
+- Método `color` en la clase `Player`
+- Sistema de tiradas de dados en el CLI
+- Lógica para duplicar dados cuando son iguales
+
+## [0.3.1] - 2025-09-28
+
+### Added
+
+- Atributos de la clase `Dice`
+- Método `roll` en la clase `Dice`
+- Método `dobles` en la clase `Dice`
+- Tests unitarios para la clase `Dice`
+
+### Changed
+
+- Mejora gráfica significativa del tablero en CLI
+- Rediseño de la representación visual de fichas
+
+## [0.3.0] - 2025-09-24
+
+### Added
+
+- Método `mostrar_tablero_cli` en la clase `Board`
+- Representación ASCII del tablero con triángulos
+- Visualización detallada de fichas en consola
+- Indicadores de barra y zona final
+
+## [0.2.2] - 2025-09-17
+
+### Added
+
+- Atributos básicos de la clase `Player`
+- Método `asignar_color_opuesto` en la clase `Player`
+
+## [0.2.1] - 2025-09-16
+
+### Added
+
+- Implementación inicial del CLI (Command Line Interface)
+- Estructura básica para interacción por consola
+
+## [0.2.0] - 2025-09-15
+
+### Added
+
+- Método `setup` en la clase `Board`
+- Configuración inicial estándar del tablero de Backgammon
+- Disposición automática de las 15 fichas por jugador
+
+## [0.1.0] - 2025-09-04
+
+### Added
+
+- Estructura inicial del proyecto
+- Clases base: `Board`, `Player`, `Game`, `Dice`, `Checkers`
+- Archivo `requirements.txt` con dependencias
+- Configuración básica del repositorio
