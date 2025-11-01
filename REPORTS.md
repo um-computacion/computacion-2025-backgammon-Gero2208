@@ -11,10 +11,10 @@ core/board.py           82      0   100%
 core/checkers.py       181      5    97%   193, 210, 307-309
 core/dice.py            17      0   100%
 core/exceptions.py       4      0   100%
-core/game.py            79      4    95%   66-67, 143, 238
+core/game.py            79      2    97%   143, 238
 core/player.py          11      0   100%
 --------------------------------------------------
-TOTAL                  461     13    97%
+TOTAL                  461     11    98%
 
 ```
 
