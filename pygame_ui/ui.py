@@ -485,6 +485,18 @@ def dibujar_destinos_posibles(pantalla, destinos):
 
 # --- Funciones de Manejo de Eventos ---
 
+def _buscar_punto_mas_alto_blanco(board):
+    """
+    Encuentra el punto más alto (índice más bajo en casa) ocupado por
+    el jugador blanco. Exclusivo para la lógica de la UI.
+    """
+    puntos = board.get_points()
+    for i in range(18, 24):
+        if puntos[i] and puntos[i][0] == "blanco":
+            return i
+    return None  # No debería ocurrir si se llama correctamente
+
+
 def _manejar_clic_bear_off(game, pico_seleccionado):
     """Maneja el clic en el botón de bear off."""
     if game.todas_fichas_en_casa() and pico_seleccionado is not None:
@@ -519,15 +531,34 @@ def _manejar_todas_en_casa(game, board, pico, pico_seleccionado):
     elif pico_seleccionado is not None:
         origen = pico_seleccionado
         destino = pico
+        if destino is None:
+            # Intento de bear off al hacer clic fuera del tablero
+            for dado in list(game.movimientos_restantes):
+                try:
+                    game.sacar_ficha(origen, dado)
+                    return None, [], f"Sacaste desde {origen + 1} con dado {dado}"
+                except BackgammonException:
+                    # Si falla y es el jugador blanco, podría ser por la regla del punto más alto
+                    if game.jugador_actual().color() == "blanco":
+                        punto_alto = _buscar_punto_mas_alto_blanco(board)
+                        if punto_alto is not None and punto_alto != origen:
+                            try:
+                                # Reintentar con el punto correcto
+                                game.sacar_ficha(punto_alto, dado)
+                                return None, [], f"Movimiento corregido a {punto_alto + 1}"
+                            except BackgammonException:
+                                continue
+                    continue
+            return pico_seleccionado, [], "No puedes sacar con los dados actuales."
+
         if destino == origen:
             return origen, calcular_destinos_posibles(game, board, origen), \
-                "Para sacar, usa el botón 'Sacar'."
+                "Clic en un destino válido o fuera del tablero para sacar."
         try:
             game.mover_ficha(origen, destino)
             return None, [], ""
         except BackgammonException:
-            return origen, calcular_destinos_posibles(game, board, origen), \
-                "Movimiento inválido. Para sacar, usa el botón 'Sacar'."
+            return origen, calcular_destinos_posibles(game, board, origen), "Movimiento inválido."
     return pico_seleccionado, [], ""
 
 
