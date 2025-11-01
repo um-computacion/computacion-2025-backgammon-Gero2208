@@ -1,0 +1,17 @@
+.git
+.venv
+__pycache__
+*.pyc
+.dockerignore
+Dockerfile
+docker-compose.yml
+.gitignore
+README.md
+JUSTIFICACION.md
+UML.mermaid
+REPORTS.md
+CHANGELOG.md
+.github
+prompts
+.pylintrc
+.coveragerc
