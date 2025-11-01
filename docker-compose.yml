@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  tests:
+    build: .
+    command: sh -c "coverage run -m unittest discover tests && coverage report"
+
+  cli:
+    build: .
+    stdin_open: true
+    tty: true
+    command: python3 -m cli.cli
